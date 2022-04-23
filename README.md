@@ -1,3 +1,17 @@
-# Ride Finder
+# Japan Adventure Maps
 
-This will be an application that allows users to map and share bicycle routes.
+An application for building and sharing maps of hiking trails and cycling routes in Japan.
+
+#  💻
+* Rails
+* React
+* TypeScript
+* MapboxGL
+
+## Setup
+
+```bash
+rails db:create
+rails db:migrate
+make start-dev
+```
