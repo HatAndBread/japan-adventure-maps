@@ -1,0 +1,151 @@
+// Place all the styles related to the comments controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.EventShow {
+  margin-top: 8px;
+  max-height: calc(80vh - 48px);
+  width: 100%;
+  overflow-y: scroll;
+  .post-button {
+    margin: 16px;
+  }
+  h1 {
+    font-size: 16px;
+    margin: 0;
+  }
+  h3 {
+    font-size: 12px;
+    margin: 0;
+  }
+  p {
+    font-size: small;
+  }
+}
+.event-comments {
+  margin-top: 4px;
+  padding: 0px 4px;
+  .comment {
+    display: flex;
+  }
+  .comment-user {
+    background-color: white;
+    width: 80px;
+    font-size: small;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    .avatar {
+      margin: 16px;
+    }
+  }
+  .comment-top {
+    font-size: small;
+    font-family: monospace;
+    margin: 0;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(50, 50, 50, 0.1);
+    p {
+      margin: 0;
+    }
+  }
+  .ql-editor {
+    padding: 0;
+    margin: 0;
+  }
+  .comment-right {
+    background-color: white;
+    overflow: hidden;
+    flex-grow: 1;
+    button {
+      margin-top: 8px;
+    }
+  }
+  .comment > * {
+    margin: 4px 4px;
+    padding: 8px;
+    border-radius: 6px;
+  }
+}
+
+.details-top {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: flex;
+}
+
+.ride-details {
+  background-color: white;
+  border-radius: 6px;
+  width: 50% !important;
+  margin: 0px 4px 0 8px;
+  padding: 8px 8px 8px 8px;
+}
+
+.participants-list {
+  width: 50% !important;
+  background-color: white;
+  margin: 0px 8px 0 4px;
+  padding: 8px 8px 8px 8px;
+  border-radius: 6px;
+  h3 {
+    margin: 0;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    margin: 0 8px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+  }
+  button {
+    margin-top: 16px;
+  }
+}
+
+.participants-modal {
+  width: fit-content;
+  ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0;
+    li {
+      display: flex;
+      margin: 0 8px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+    }
+  }
+}
+@media only screen and (max-width: 1000px) {
+  .EventShow {
+    width: 100vw;
+    margin-top: 16;
+    max-height: unset;
+    overflow-y: unset;
+    margin-bottom: 32px;
+    margin-top: 32px;
+  }
+  .details-top {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .details-top > * {
+    margin: 0px 0px 16px 0px;
+    width: calc(100% - 64px);
+    padding: 8px;
+  }
+}

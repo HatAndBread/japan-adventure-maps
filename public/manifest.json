@@ -1,0 +1,22 @@
+{
+  "name": "Pedal Party",
+  "short_name": "Pedal Party",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#333333",
+  "theme_color": "#333333",
+  "description": "An application for making and sharing bicycle routes",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "android-chrome-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.hero {
+  width: 100vw;
+  min-height: 100vh;
+  margin-top: 48px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .hero-navigation-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+.how-it-works {
+  width: 100vw;
+  display: flex;
+  justify-content: space-evenly;
+  .basic-card {
+    h2 {
+      text-decoration: underline;
+    }
+    width: 270px;
+    box-shadow: 2px 2px 2px 2px rgba(50, 50, 50, 0.5);
+    img {
+      user-select: none;
+      max-height: 200px;
+    }
+  }
+}
+.spacer {
+  height: 260px;
+}
+footer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 100px;
+  width: 100vw;
+  background-color: rgba(50, 50, 50, 0.9);
+  color: snow;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  padding-top: 16px;
+  p {
+    max-width: 800px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .how-it-works {
+    flex-direction: column;
+    align-items: center;
+  }
+}

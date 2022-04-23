@@ -1,0 +1,11 @@
+<h1>We're sorry to see you go. Ride on!</h1>
+<h2>How to delete your account</h2>
+<% if current_user %>
+  <%= link_to 'Delete my account', registration_path(current_user), class: 'link-button', method: :delete %>
+<% else %>
+  <ul>
+    <li><%= link_to 'Login', new_user_session_path, class: 'link' %> as normal.</li>
+    <li>Come back to this page (pedal-party.bike/delete_account)</li>
+    <li>Click on the delete button</li>
+  </ul>
+<% end %>

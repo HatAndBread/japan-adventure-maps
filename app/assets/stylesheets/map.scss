@@ -1,0 +1,239 @@
+#map {
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: calc(80vh - 40px);
+  bottom: 0;
+}
+.map-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.map-show-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+@media only screen and (max-width: 700px) {
+  .map-show-container {
+    flex-direction: column;
+  }
+}
+
+.map-top-tools {
+  position: absolute;
+  top: 0;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 80px);
+  pointer-events: none;
+  padding: 0 40px;
+  color: white;
+  font-family: monospace;
+}
+
+.MapTools {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 200px;
+  z-index: 1;
+  padding: 32px 8px 8px 8px;
+  background-color: snow;
+  border-radius: 6px;
+  left: calc(100% - 260px);
+  top: 120px;
+  box-shadow: 5px 3px 3px rgba(50, 50, 50, 0.5) !important;
+  transition: 0.3s;
+  opacity: 0;
+  .closer {
+    position: absolute;
+    left: calc(100% - 32px);
+    margin: 8px;
+    top: 8px;
+  }
+  font-family: monospace;
+}
+.tool-box-icon {
+  position: absolute;
+  left: calc(100% - 80px);
+  top: 80px;
+  z-index: 1;
+}
+.no-tools-undo {
+  background-color: transparent;
+  position: absolute;
+  display: flex;
+  left: calc(100% - 252px);
+  top: 80px;
+  z-index: 1;
+  button {
+    width: 50px;
+    background-color: rgba(250, 250, 250, 0.7);
+  }
+  .nt-container {
+    color: rgba(50, 50, 50, 0.5);
+    height: 100%;
+    margin-top: 16px;
+    width: 50px;
+    text-align: center;
+    vertical-align: center;
+  }
+}
+.tool-row {
+  display: flex;
+}
+
+.map-tool-button {
+  background-color: snow;
+  color: black;
+  margin: 4px;
+  padding: 4px;
+  font-family: monospace;
+  height: 40px;
+  flex-grow: 1;
+  border-color: rgb(50, 50, 50);
+  border-style: solid;
+  border-width: 1px;
+}
+.three-buttons {
+  width: 80px;
+}
+.big-icon {
+  font-size: 22px;
+}
+
+.start-marker {
+  background-size: cover;
+  background-image: url('start.png');
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin: 0 !important;
+}
+.end-marker {
+  background-size: cover;
+  background-image: url('finish.png');
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin: 0 !important;
+}
+.home-marker {
+  background-size: cover;
+  background-image: url('home.png');
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin: 0 !important;
+}
+.mapboxgl-popup {
+  padding-bottom: 50px;
+}
+.mapboxgl-popup-content {
+  border-radius: 6px !important;
+  box-shadow: 5px 3px 3px rgba(50, 50, 50, 0.5) !important;
+  width: 400px !important;
+  max-width: 80vw !important;
+  max-height: 400px !important;
+  overflow-y: scroll;
+  text-align: unset;
+  img {
+    max-width: 100%;
+  }
+}
+
+.ql-align-center {
+  text-align: center !important;
+}
+
+.ql-align-right {
+  text-align: right !important;
+}
+
+.ql-align-justify {
+  text-align: justify !important;
+}
+
+.ql-font-monospace {
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.ql-font-serif {
+  font-family: 'Times New Roman', Times, serif !important;
+}
+
+.ql-size-huge {
+  font-size: 32px !important;
+}
+
+.ql-size-large {
+  font-size: 26px !important;
+}
+
+.ql-size-normal {
+  font-size: 18px !important;
+}
+
+.ql-size-small {
+  font-size: 12px !important;
+}
+
+.control-point {
+  width: 4px;
+  height: 4px;
+  margin: 0 !important;
+  background-color: seashell;
+  border-style: groove;
+  border-width: 4px;
+  border-color: black;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.control-point::before {
+  // this creates a wider area to click on
+  content: '';
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  z-index: 10000;
+}
+
+.MapControls3d button {
+  position: relative;
+  top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.three-d-button {
+  pointer-events: all;
+}
+.ElevationDistanceDisplayer {
+  position: fixed;
+  z-index: 2;
+  background-color: rgba(50, 50, 50, 0.5);
+  padding: 4px;
+  color: snow;
+  border-radius: 6px;
+}
+
+.ride-stats {
+  height: 24px;
+  color: white;
+  background-color: rgba(50, 50, 50, 0.8);
+}

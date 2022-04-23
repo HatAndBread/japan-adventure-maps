@@ -1,0 +1,26 @@
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(100% + 6vw);
+  font-family: 'Rock 3D', monospace;
+  padding: 8px;
+  border-radius: 6px;
+  margin: 16px;
+  max-width: 90vw;
+  img {
+    height: 25vw;
+    max-height: 160px;
+  }
+}
+
+.big-logo {
+  height: fit-content;
+  min-height: 180px;
+}
+
+@media only screen and (min-width: 1000px) {
+  .logo {
+    font-size: 72px;
+  }
+}

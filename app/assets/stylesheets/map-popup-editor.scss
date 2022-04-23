@@ -1,0 +1,12 @@
+.MapPopUpEditor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .color-picker {
+    margin: 8px;
+    height: 0;
+  }
+  .save-button {
+    margin: 16px;
+  }
+}
