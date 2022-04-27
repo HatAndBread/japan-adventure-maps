@@ -25,7 +25,7 @@ export const UseMapInitialization = () => {
         if (!routeUnderConstruction && profile?.startLng && profile?.startLat) {
           map.jumpTo({ center: new LngLat(profile.startLng, profile.startLat), zoom: 14 });
         } else if (!routeUnderConstruction && window.userLocation?.length) {
-          map.jumpTo({ center: new LngLat(window.userLocation[1], window.userLocation[0]), zoom: 5 });
+          map.jumpTo({ center: new LngLat(window.userLocation[0], window.userLocation[1]), zoom: 5 });
         }
       }
       if (map.getStyle().name !== window.baseMapName) {
