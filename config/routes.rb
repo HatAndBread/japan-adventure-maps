@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   end
 
   resources :profiles, only: %i[show edit update]
+  resources :likes, only: %i[create]
   get '/privacy_policy', to: 'pages#privacy_policy'
   get '/delete_account', to: 'pages#delete_account'
   get '/find_a_ride', to: 'rides#find_a_ride'

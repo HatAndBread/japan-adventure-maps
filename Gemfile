@@ -34,12 +34,14 @@ gem 'devise'
 gem 'httparty'
 gem 'interactor-rails', '~> 2.0'
 gem 'omniauth-facebook'
-gem "omniauth-rails_csrf_protection"
+gem 'omniauth-rails_csrf_protection'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'awesome_print'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
 end
 
 group :development do

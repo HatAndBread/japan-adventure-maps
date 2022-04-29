@@ -30,6 +30,10 @@ class ApplicationController < ActionController::Base
     render json: { success: false }.to_json
   end
 
+  def succeeded
+    render json: { success: true }.to_json
+  end
+
   def use_react
     @use_react = true
   end
