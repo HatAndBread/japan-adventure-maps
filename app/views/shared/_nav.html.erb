@@ -8,8 +8,8 @@
     <% else %>
       <%= link_to 'Home', root_path, class: 'link-underline' %>
     <% end %>
-    <%= link_to 'Join A Ride', find_a_ride_path, class: 'link-underline' %>
-    <%= link_to 'Create A Ride', new_ride_path, class: 'link-underline' %>
+    <%= link_to 'Find An Adventure', find_a_ride_path, class: 'link-underline' %>
+    <%= link_to 'Make A Map', new_ride_path, class: 'link-underline' %>
     <% if current_user %>
       <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: 'link-underline' %>
     <% else %>
