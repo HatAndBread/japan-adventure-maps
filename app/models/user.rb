@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :rides, dependent: :destroy
   has_many :participants, dependent: :destroy
+  has_many :likes
   has_one :profile, dependent: :destroy
 
   validates :username, presence: true, uniqueness: true
