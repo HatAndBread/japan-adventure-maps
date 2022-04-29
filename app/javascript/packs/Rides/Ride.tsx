@@ -50,7 +50,6 @@ const Ride = () => {
   const data = ctx.controllerData;
   const isEditor = ['rides#new', 'rides#edit'].includes(data.controllerAction);
   const map = window.mapboxMap as Map;
-  const [rideWithURL, setRideWithURL] = useState<null | string>(null);
   const [route, _setRoute] = useState<Route>(null);
   const routeRef = useRef(route);
   const setRoute = (newRoute: Route) => {
