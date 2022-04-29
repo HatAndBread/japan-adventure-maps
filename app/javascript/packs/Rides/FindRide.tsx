@@ -62,7 +62,7 @@ const FindRide = () => {
     if (profile?.startLng && profile?.startLat) {
       map.jumpTo({ center: new LngLat(profile.startLng, profile.startLat), zoom: START_ZOOM });
     } else if (window.userLocation?.length) {
-      map.jumpTo({ center: new LngLat(window.userLocation[1], window.userLocation[0]), zoom: 4 });
+      map.jumpTo({ center: new LngLat(window.userLocation[0], window.userLocation[1]), zoom: 4 });
     }
     return () => {
       map.off('move', onMove);
