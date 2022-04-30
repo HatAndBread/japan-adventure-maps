@@ -64,6 +64,7 @@ window.mapboxMap ||= new mapboxgl.Map({
   container: mapboxContainer,
   style: window.baseMapURL,
   center: [138.2529, 38],
+  maxBounds: [[114.5052, 22.171032], [175.865751, 52.559459]],
   zoom: 5,
 });
 window.isProbablyDesktop && window.mapboxMap.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
