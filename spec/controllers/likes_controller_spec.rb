@@ -23,6 +23,14 @@ RSpec.describe LikesController do
           expect(flash[:alert]).to eq('You can only like one time.')
         end
       end
+
+      context 'when a user is not signed in' do
+        let!(:ride) { create(:ride) }
+        it 'alerts the user to sign in' do
+          post :create, params: { user_id: nil, likeable_id: ride.id, likeable_type: 'Ride' }
+          expect(flash[:alert]).to eq('You need to sign in or sign up before continuing.')
+        end
+      end
     end
   end
 end
