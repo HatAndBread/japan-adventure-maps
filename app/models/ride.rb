@@ -1,9 +1,10 @@
 class Ride < ApplicationRecord
+  include Likeable
+
   belongs_to :user
   has_many :participants, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :likes, as: :likeable
-
 
   def leaders
     self.participants.where(is_leader: true).map{ |p| p.user}
