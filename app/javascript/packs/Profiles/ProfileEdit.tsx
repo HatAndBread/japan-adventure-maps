@@ -39,57 +39,18 @@ const ProfileEdit = () => {
   }, [profile]);
   const url = `/profiles/${profileData.id}`;
 
-  const yearsAgo = (years: number) =>
-    new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 365.25 * years).toISOString().slice(0, 10);
-
   return (
     <div className='ProfileEdit'>
       <div className='non-map'>
-        <div className='top-row'>
-          <div className='avatar-uploader'>
-            <ImageUploader
-              onImageUploaded={async (imageUrls) => {
-                await axios.put(url, { avatar: imageUrls[0] });
-                setImageSrc(imageUrls[0]);
-              }}
-            />
-            <Avatar avatarPath={imgSrc} width={120} height={120} />
-          </div>
-          <form
-            className='etc-container'
-            onChange={debounce(async (e: ChangeEvent<HTMLFormElement>) => {
-              await axios.put(url, { [e.target.id]: e.target.value });
-            }, 800)}>
-            Location
-            <input
-              type='text'
-              name='location'
-              id='location'
-              title='location'
-              placeholder='Tokyo, Japan'
-              defaultValue={profileData.location}
-            />
-            Bikes
-            <input
-              type='text'
-              title='bikes'
-              name='bikes'
-              id='bikes'
-              placeholder='1963 Bianchi Campione d’Italia, 2023 Trek Emonda'
-              defaultValue={profileData.bikes}
-            />
-            Birthday
-            <input
-              type='date'
-              name='birthday'
-              id='birthday'
-              title='birthday'
-              min={yearsAgo(130)}
-              max={yearsAgo(12)}
-              defaultValue={profileData.birthday?.slice(0, 10)}
-            />
-          </form>
-        </div>
+      <div className='avatar-uploader'>
+        <ImageUploader
+          onImageUploaded={async (imageUrls) => {
+            await axios.put(url, { avatar: imageUrls[0] });
+            setImageSrc(imageUrls[0]);
+          }}
+        />
+        <Avatar avatarPath={imgSrc} width={120} height={120} />
+      </div>
         <div className='intro-container'>
           <QuillEditor
             setDelta={debounce(async (intro) => {

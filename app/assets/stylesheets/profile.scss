@@ -39,33 +39,10 @@
 }
 .ProfileEdit {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin-top: 16px;
-  .top-row {
-    display: flex;
-    margin-bottom: 8px;
-    justify-content: space-between;
-  }
-  .etc-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    height: '100%';
-    background-color: white;
-    border-radius: 6px;
-    margin-left: 8px;
-    padding: 16px;
-    input {
-      width: 100%;
-      border-color: rgba(50, 50, 50, 0.5);
-      border-style: solid;
-      border-width: 1px;
-      padding: 4px;
-      border-radius: 6px;
-    }
-  }
   .avatar-uploader {
     button {
       white-space: nowrap;
@@ -77,18 +54,23 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    border-width: 1px;
+    border-color: #d6d6d6;
+    border-style: solid;
   }
   .non-map {
-    margin: 0 32px 32px 0;
+    padding: 0;
     display: flex;
-    flex-direction: column;
-    width: 40vw;
+    justify-content:space-between;
+    width: 50vw;
     height: 100%;
+    margin-bottom: 16px;
   }
   .intro-container {
     width: 100%;
+    margin-left: 16px;
     .ql-container {
       height: 222px;
     }
@@ -97,9 +79,11 @@
     background-color: white;
     border-radius: 6px;
     overflow: hidden;
-    padding: 8px;
     height: fit-content;
     width: 50vw;
+    border-width: 1px;
+    border-color: #d6d6d6;
+    border-style: solid;
     h1 {
       font-size: large;
       margin-bottom: 16px;
@@ -119,9 +103,23 @@
     margin-bottom: 16px !important;
   }
   .profile-map-container {
-    width: calc(90% - 16px) !important;
+    width: calc(90%) !important;
   }
 }
+
+@media only screen and (max-width: 500px) {
+  .non-map {
+    flex-direction: column;
+  }
+  .intro-container {
+    margin-top: 16px;
+    margin-left: 0 !important;
+  }
+  .avatar-uploader {
+    width: calc(100% - 16px) !important;
+  }
+}
+
 @media only screen and (max-width: 400px) {
   .ProfileEdit {
     .top-row {
@@ -149,18 +147,16 @@
       width: 564px;
       max-width: 82vw;
     }
+    .routes-list {
+      width: 594px !important;
+      max-width: 90vw !important;
+    }
   }
 }
 
 .ride-index {
   display: flex;
-  justify-content: center;
-  .routes-container {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    max-width: 1200px;
-  }
+  justify-content:center;
   .routes-list {
     list-style: none;
     padding: 0;
@@ -168,14 +164,10 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    width: 600px;
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow-y: scroll;
     background-color: purple;
     border-radius: 6px;
     background-color: white;
-    margin: 8px;
+    width: 1216px;
     h1 {
       text-align: center;
       font-size: large;
@@ -189,7 +181,6 @@
   }
   li {
     width: 100%;
-    max-width: 800px;
   }
 
   .ride-preview-container {
@@ -226,31 +217,5 @@
     a {
       margin: 0px 4px;
     }
-  }
-  .leader-tag {
-    background-color: rgba(50, 50, 50, 0.8);
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    width: fit-content;
-    padding: 4px;
-  }
-}
-
-@media only screen and (max-width: 1200px) {
-  .routes-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .buttons {
-      position: static;
-      width: 100%;
-    }
-  }
-  p {
-    font-size: small;
-  }
-  li {
-    min-width: 0;
   }
 }

@@ -22,21 +22,6 @@ const ProfileShow = () => {
         <div className='stats-avatar card'>
           <h1>{data.profileUser.username}</h1>
           <Avatar avatarPath={profileData.avatar} width={200} height={200} />
-          <div className='profile-stats'>
-            <ul>
-              <li>
-                <strong>Location: </strong> {profileData.location || '?'}
-              </li>
-              <li>
-                <strong>Bikes: </strong>
-                {profileData.bikes || '?'}
-              </li>
-              <li>
-                <strong>Birthday: </strong>{' '}
-                {profileData.birthday ? DateTime.fromISO(profileData.birthday).toLocaleString(DateTime.DATE_FULL) : '?'}
-              </li>
-            </ul>
-          </div>
         </div>
         {profileData.intro && profileData.intro?.length > 25 && (
           <div className='intro-container card'>
@@ -45,18 +30,11 @@ const ProfileShow = () => {
         )}
       </div>
       <div className='ride-index'>
-        <div className='routes-container'>
-          <RouteList
-            title='Upcoming Rides'
-            routes={data.upcomingRides}
-            belongsToCurrentUser={data.currentUser?.id === profileData.userId}
-          />
-          <RouteList
-            title='My Routes'
-            routes={data.routes}
-            belongsToCurrentUser={data.currentUser?.id === profileData.userId}
-          />
-        </div>
+        <RouteList
+          title='My Routes'
+          routes={data.routes}
+          belongsToCurrentUser={data.currentUser?.id === profileData.userId}
+        />
       </div>
     </div>
   );
