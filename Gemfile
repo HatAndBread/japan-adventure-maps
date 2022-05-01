@@ -35,7 +35,6 @@ gem 'httparty'
 gem 'interactor-rails', '~> 2.0'
 gem 'omniauth-facebook'
 gem 'omniauth-rails_csrf_protection'
-gem 'solargraph'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -43,6 +42,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  gem 'solargraph'
 end
 
 group :development do
