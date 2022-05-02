@@ -6,6 +6,7 @@ for (const k in process.env) {
   define[`process.env.${k}`] = JSON.stringify(process.env[k])
 };
 
+
 require("esbuild")
   .build({
     entryPoints: ["application-esbuild.js"],

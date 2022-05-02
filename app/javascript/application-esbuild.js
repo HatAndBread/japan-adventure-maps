@@ -10,7 +10,6 @@ import App from './packs/App';
 import { getInstanceVars } from './lib/getInstanceVars';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
-import '@fortawesome/free-brands-svg-icons';
 import '@fortawesome/fontawesome-free';
 import { MapEventListenerAdder } from './lib/map-logic';
 import axios from './lib/axios';
