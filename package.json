@@ -5,7 +5,7 @@
     "lint": "eslint app/javascript/**/*.ts[x]",
     "test": "jest",
     "build": "node esbuild.config.js",
-    "build:css": "sass ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+    "build:css": "build:css"
   },
   "dependencies": {
     "@babel/preset-react": "^7.14.5",
