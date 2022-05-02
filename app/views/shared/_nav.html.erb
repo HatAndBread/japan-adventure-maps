@@ -11,7 +11,7 @@
     <%= link_to 'Find An Adventure', find_a_ride_path, class: 'link-underline' %>
     <%= link_to 'Make A Map', new_ride_path, class: 'link-underline' %>
     <% if current_user %>
-      <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: 'link-underline' %>
+      <%= link_to "Sign Out", destroy_user_session_path, class: 'link-underline', data: { turbo_method: :delete } %>
     <% else %>
       <%= link_to 'Sign In', new_user_session_path, class: 'link-underline' %>
       <%= link_to "Sign Up", new_user_registration_path, class: 'link-underline'  %>

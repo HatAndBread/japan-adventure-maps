@@ -10,7 +10,7 @@ import length from '@turf/length';
 import bearing from '@turf/bearing';
 import rhumbDestination from '@turf/rhumb-destination';
 import { point } from '@turf/helpers';
-import { addLayersAndSources } from '../application.js';
+import { addLayersAndSources } from '../../application-esbuild.js';
 import { getElevation } from '../../lib/map-logic';
 
 const ThreeD = () => {

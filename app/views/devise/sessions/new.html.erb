@@ -1,6 +1,6 @@
 <div class='devise-form basic-card'>
   <h2>Log in</h2>
-  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: false} }) do |f| %>
     <div class="field">
       <%= f.label :username %><br />
       <%= f.text_field :username, autocomplete: "username", autofocus: true %>

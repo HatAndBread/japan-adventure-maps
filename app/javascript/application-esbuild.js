@@ -1,28 +1,22 @@
-// This file is automatically compiled by Webpack, along with any other files
-// present in this directory. You're encouraged to place your actual application logic in
-// a relevant structure within app/javascript and only use these pack files to reference
-// that code so it'll be compiled.
-import 'core-js/stable';
+// Entry point for the build script in your package.json
 import 'regenerator-runtime/runtime';
 import Rails from '@rails/ujs';
-import Turbolinks from 'turbolinks';
+import "@hotwired/turbo-rails";
 import * as ActiveStorage from '@rails/activestorage';
-import 'channels';
 import mapboxgl from 'mapbox-gl';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import { getInstanceVars } from '../lib/getInstanceVars';
+import App from './packs/App';
+import { getInstanceVars } from './lib/getInstanceVars';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/free-brands-svg-icons';
 import '@fortawesome/fontawesome-free';
-import { MapEventListenerAdder } from '../lib/map-logic';
-import axios from '../lib/axios';
-import { navbar } from '../lib/navbar';
+import { MapEventListenerAdder } from './lib/map-logic';
+import axios from './lib/axios';
+import { navbar } from './lib/navbar';
 
 Rails.start();
-Turbolinks.start();
 ActiveStorage.start();
 
 const baseURL = window.location.host === 'localhost:3000' ? 'http://localhost:3000' : 'https://pedal-party.bike';
@@ -105,53 +99,6 @@ export const addLayersAndSources = () => {
     },
   });
 
-  // window.mapboxMap.addSource('dirt', {
-  //   type: 'vector',
-  //   url: 'mapbox://pedalparty.dirt',
-  // });
-  // window.mapboxMap.addLayer({
-  //   id: 'dirt',
-  //   type: 'line',
-  //   source: 'dirt',
-  //   'source-layer': 'dirt',
-  //   minzoom: 10,
-  //   layout: {
-  //     'line-cap': 'round',
-  //     'line-join': 'round',
-  //   },
-  //   paint: {
-  //     'line-color': 'rgba(180,120,120, 0.9)',
-  //     'line-width': 2,
-  //     'line-dasharray': [1, 2],
-  //   },
-  // });
-  // window.mapboxMap.setPaintProperty('dirt', 'line-opacity', [
-  //   'interpolate',
-  //   // Set the exponential rate of change to 0.5
-  //   ['exponential', 0.5],
-  //   ['zoom'],
-  //   10,
-  //   0,
-  //   14,
-  //   1,
-  //   18,
-  //   0,
-  // ]);
-  // window.mapboxMap.setPaintProperty('dirt', 'line-width', [
-  //   'interpolate',
-  //   // Set the exponential rate of change to 0.5
-  //   ['exponential', 0.5],
-  //   ['zoom'],
-  //   10,
-  //   1,
-  //   12,
-  //   1,
-  //   14,
-  //   3,
-  //   18,
-  //   1,
-  // ]);
-  // add the DEM source as a terrain layer with exaggerated height
   window.mapboxMap.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
 };
 
@@ -179,17 +126,17 @@ const startReact = () => {
   ReactDOM.render(<App controllerData={instanceVars} />, root);
 };
 
-document.addEventListener('turbolinks:before-render', () => {
+document.addEventListener('turbo:before-render', () => {
   // Clean up React before each page load!
   window.stop3D = true;
   const root = document.getElementById('root');
   if (root) {
     root.remove();
-    Turbolinks.clearCache();
+    Turbo.clearCache();
   }
 });
 
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   startReact();
   let height = 0;
   Array.from(document.getElementsByClassName('rails-flash')).forEach((item) => {
