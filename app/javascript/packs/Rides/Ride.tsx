@@ -3,7 +3,7 @@ import { addMarker, moveStartMarker, Route } from '../../lib/map-logic';
 import { getClickFunc } from '../../lib/mapClickFunctions';
 import { useAppContext } from '../Context';
 import { Map, LngLat } from 'mapbox-gl';
-import { addLayersAndSources } from '../application.js';
+import { addLayersAndSources } from '../../application-esbuild.js';
 import MapboxMap from '../Components/Map/MapboxMap';
 import ElevationProfile from '../Components/MapTools/ElevationProfile';
 import MapTools from '../Components/MapTools/MapTools';

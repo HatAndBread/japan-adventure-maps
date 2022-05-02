@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppContext } from '../Context';
 import { useRideContext } from '../Rides/Ride';
 import { LngLat, Map } from 'mapbox-gl';
-import { addLayersAndSources } from '../application.js';
+import { addLayersAndSources } from '../../application-esbuild.js';
 
 export const UseMapInitialization = () => {
   const map = window.mapboxMap as Map;
