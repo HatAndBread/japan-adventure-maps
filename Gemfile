@@ -27,7 +27,8 @@ gem 'jbuilder', '~> 2.7'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
-gem 'sprockets-rails'
+
+gem 'sprockets-rails', :require => 'sprockets/railtie'
 
 # Find-A-Ride
 gem 'cloudinary', '~> 1.16.0'

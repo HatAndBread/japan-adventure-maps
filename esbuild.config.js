@@ -20,4 +20,7 @@ require("esbuild")
     define
   })
   .catch(() => process.exit(1));
-process.exit(0);
+
+if (!process.argv.includes('--watch')){
+  process.exit(0);
+}
