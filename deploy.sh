@@ -7,7 +7,7 @@ if [ "$ANSWER" = "y" ]; then
   RAILS_ENV=production bundle exec rake assets:precompile
   echo "Pushing to git 🕺 "
   git add .
-  git commit -m "New Deploy"
+  git commit -m "Deploy $(date)"
   git push origin master
   git push heroku master
 fi
