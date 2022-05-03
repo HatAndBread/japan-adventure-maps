@@ -34,9 +34,8 @@
       <meta name="react-data" content="<%= instance_variable_names.filter {|v| 
   v unless ["@_routes", "@_config", "@use_react", "@lookup_context", "@view_renderer", "@current_template", "@rendered_format", "@marked_for_same_origin_verification", "@_assigns", "@_controller", "@_request", "@_default_form_builder", "@view_flow", "@output_buffer", "@virtual_path", "@tag_builder"].include?(v) }.compact.map{ |e| [e[1..-1], instance_variable_get(e)]}.to_h.merge(current_user: current_user, profile: current_user&.profile, env: Rails.env).to_json %>">
     <%end%>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_link_tag 'application-esbuild', media: 'all', 'data-turbo-track': 'reload' %>
-    <%= javascript_include_tag 'application-esbuild', 'data-turbo-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= javascript_include_tag 'application-esbuild', 'data-turbo-track': 'reload', defer: true %>
   </head>
   <body>
     <div id="fb-root"></div>
