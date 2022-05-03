@@ -20,3 +20,4 @@ require("esbuild")
     define
   })
   .catch(() => process.exit(1));
+process.exit(0);
