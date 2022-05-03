@@ -7,5 +7,3 @@ start-dev-https:
 seed: 
 		@echo "starting seed" && rails db:seed
 
-deploy:
-		@echo "Building Assets 🔨" && RAILS_ENV=production bundle exec rake assets:precompile && echo "Pushing to git 🕺 " && git add . && git commit -m "New Deploy" && git push origin master && echo "Deploying to Heroku🚀" && git push heroku master
