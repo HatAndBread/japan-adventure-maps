@@ -41,5 +41,3 @@ server.pass.key
 localhost.crt
 localhost.key
 .DS_Store
-/app/assets/builds/*
-!/app/assets/builds/.keep
