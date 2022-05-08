@@ -5,7 +5,7 @@
 .hero {
   width: 100vw;
   min-height: 100vh;
-  margin-top: 48px;
+  margin-top: 40px;
   position: absolute;
   top: 0;
   left: 0;
@@ -35,6 +35,54 @@
     }
   }
 }
+
+.card-shadow {
+  box-shadow: 2px 2px 2px 2px rgba(50, 50, 50, 0.5);
+}
+
+.featured-route {
+  max-width: 1000px;
+  width: 90vw !important;
+  margin-bottom: 32px !important;
+  position: relative;
+  .likes-count {
+    position: relative;
+    font-size: 11px;
+    top: -8px;
+  }
+  .likes {
+    color: firebrick;
+    position: absolute;
+    top: 16px;
+    left: calc(100% - 40px);
+  }
+  .featured-route-content {
+    display: flex;
+    p {
+      margin: 16px;
+    }
+  }
+  .route-stats {
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    padding: 0;
+    width: 100%;
+    justify-content: space-evenly;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .featured-route {
+    width: 82% !important;
+  }
+  .featured-route-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 .spacer {
   height: 260px;
 }

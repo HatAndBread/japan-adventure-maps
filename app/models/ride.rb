@@ -18,6 +18,16 @@ class Ride < ApplicationRecord
     self.participants.map{|p| p.user.attributes.merge(is_leader: p.is_leader, user_id: p.user_id)}
   end
 
+  def featured_images
+    imgs = popup_images
+    imgs << map_image_url if map_image_url
+    imgs
+  end
+
+  def popup_images
+    popups.scan(/https:\/\/res\.cloudinary\.com\/hatandbread\/image\/upload\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\.[a-z]{3}/)
+  end
+
   def self.select_simple_ride_data
     self.select(:title,
                 :description,

@@ -192,19 +192,16 @@
     margin: 8px;
   }
 
-  .map-preview-image-container {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    overflow: hidden;
-  }
   .row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    img {
+      height: 100px;
+      width: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .route-image-container {
+      float: right;
+    }
   }
   .title-row {
     display: flex;

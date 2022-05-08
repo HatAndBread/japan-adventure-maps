@@ -17,6 +17,11 @@
       <p>Rate roads, trails, routes, camp sites, mountains and more. Contribute to Japan's only outdoor adventure database.</p>
     </div>
   </div>
+  <div class="featured-routes-container">
+    <% @featured_routes.each do |route| %>
+      <%= render 'shared/featured_route', route: route %>
+    <% end %>
+  </div>
   <div class="spacer"></div>
   <footer>
     <span>©2022 Pedal Party</span>

@@ -340,29 +340,24 @@
   }
 }
 .logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: calc(100% + 4vw);
-  font-family: "Rock 3D", monospace;
-  padding: 8px;
-  border-radius: 6px;
-  margin: 16px;
-  max-width: 90vw;
-}
-.logo img {
-  height: 34vw;
-  max-height: 280px;
-}
-
-.big-logo {
+  background-image: url("splash.jpg");
   height: fit-content;
-  min-height: 180px;
+  min-height: 200px;
+  background-repeat: no-repeat;
+  background-position-y: top;
+  background-position-x: center;
+  background-size: cover;
+  padding: 16px;
+  border-radius: 16px;
+  margin-top: 40px;
+  margin-bottom: 32px;
+  font-size: 72px;
+  max-width: 80%;
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (max-width: 700px) {
   .logo {
-    font-size: 72px;
+    font-size: 10vw;
   }
 }
 .MapPopUpEditor {
@@ -759,7 +754,7 @@
 .hero {
   width: 100vw;
   min-height: 100vh;
-  margin-top: 48px;
+  margin-top: 40px;
   position: absolute;
   top: 0;
   left: 0;
@@ -791,6 +786,53 @@
   max-height: 200px;
 }
 
+.card-shadow {
+  box-shadow: 2px 2px 2px 2px rgba(50, 50, 50, 0.5);
+}
+
+.featured-route {
+  max-width: 1000px;
+  width: 90vw !important;
+  margin-bottom: 32px !important;
+  position: relative;
+}
+.featured-route .likes-count {
+  position: relative;
+  font-size: 11px;
+  top: -8px;
+}
+.featured-route .likes {
+  color: firebrick;
+  position: absolute;
+  top: 16px;
+  left: calc(100% - 40px);
+}
+.featured-route .featured-route-content {
+  display: flex;
+}
+.featured-route .featured-route-content p {
+  margin: 16px;
+}
+.featured-route .route-stats {
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+  padding: 0;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 600px) {
+  .featured-route {
+    width: 82% !important;
+  }
+
+  .featured-route-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 .spacer {
   height: 260px;
 }
@@ -1008,19 +1050,14 @@ footer p {
   padding: 8px;
   margin: 8px;
 }
-.ride-index .map-preview-image-container {
-  width: 100px;
+.ride-index .row img {
   height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  overflow: hidden;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 8px;
 }
-.ride-index .row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+.ride-index .row .route-image-container {
+  float: right;
 }
 .ride-index .title-row {
   display: flex;
@@ -1048,6 +1085,32 @@ footer p {
 }
 .devise-form input {
   margin-bottom: 16px;
+}
+
+.slideshow-image {
+  width: 200px;
+  height: 200px;
+  background-color: gray;
+  user-select: none;
+  border-radius: 8px;
+}
+.slideshow-image .fa-chevron-left {
+  position: relative;
+  right: 32%;
+  top: 40%;
+  cursor: pointer;
+  background-color: rgba(250, 250, 250, 0.4);
+  padding: 8px;
+  border-radius: 8px;
+}
+.slideshow-image .fa-chevron-right {
+  position: relative;
+  left: 32%;
+  top: 40%;
+  cursor: pointer;
+  background-color: rgba(250, 250, 250, 0.4);
+  padding: 8px;
+  border-radius: 8px;
 }
 
 body {

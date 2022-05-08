@@ -1,0 +1,46 @@
+<div class="featured-route basic-card card-shadow">
+  <div class='likes'>
+    <i class="fas fa-heart"></i>
+    <span class="likes-count"> <%= route.likes_count %> </span>
+  </div>
+  <%= link_to ride_path(route) do %>
+    <h1>
+      <% if route.ride_type == 'cycling' %>
+        <i class="fas fa-bicycle fa-lg"></i>
+      <% else %>
+        <i class="fas fa-hiking fa-lg"></i>
+      <% end %>
+      &nbsp;
+      <%= route.title %>
+      &nbsp;
+    </h1>
+  <% end %>
+  <ul class="route-stats">
+    <li>
+    Created by: <%= route.user.username %>
+    </li>
+    <li>
+    Distance: <%= route.distance&.to_i %> km
+    </li>
+    <li>
+    Elevation Gain: <%= route.elevation_gain&.to_i %> m
+    </li>
+    <li>
+    Max Elevation: <%= route.max_elevation&.to_i %> m
+    </li>
+  </ul>
+  <div class="featured-route-content">
+    <div class="slideshow" data-urls="<%= route.featured_images %>">
+      <div class="slideshow-image">
+        <% if route.featured_images.size > 1 %>
+          <i class="fas fa-chevron-left fa-lg"></i>
+          <i class="fas fa-chevron-right fa-lg"></i>
+        <% end %>
+      </div>
+    </div>
+    <p>
+      <%= route.description %>
+    </p>
+  </div>
+</div>
+

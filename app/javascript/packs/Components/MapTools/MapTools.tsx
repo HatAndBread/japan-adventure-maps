@@ -7,6 +7,7 @@ import { last } from 'lodash';
 import toolbox from '../../../../assets/images/toolbox.svg';
 import Exporter from '../../../lib/Exporter';
 import Modal from '../Modal/Modal';
+import LikeButton from '../LikeButton';
 
 const MapTools = ({
   setPreviousTool,
@@ -19,6 +20,9 @@ const MapTools = ({
 }) => {
   const map = window.mapboxMap as Map;
   const ctx = useAppContext();
+  const userId = ctx.controllerData?.currentUser?.id;
+  const likeableId = ctx.controllerData?.ride?.id
+  const creatorId = ctx.controllerData?.ride?.userId;
   const [showTools, setShowTools] = useState(window.isProbablyDesktop);
   const [showExportModal, setShowExportModal] = useState(false);
   const [fileFormat, setFileFormat] = useState('.gpx');
@@ -39,6 +43,7 @@ const MapTools = ({
     isEditor,
     setLoaderText,
   } = useRideContext();
+  const [showLike, setShowLike] = useState(!isEditor && creatorId !== userId);
   const getStyle = (myTool: string) =>
     myTool === tool ? { borderColor: '#0bda51', boxShadow: '0 0 2px 2px #0bda51' } : {};
   const handleClick = (type: string) => {
@@ -155,6 +160,23 @@ const MapTools = ({
         <div style={{ color: 'rgba(180,120,120, 0.9)' }}>Dirt Road: ----</div>
         <div style={{ color: 'rgba(180,40,250, 0.6)' }}>Bike Path: ----</div>
         <div style={{ color: 'rgba(23, 136, 0, 1)' }}>Foot Path: ----</div>
+        {showLike &&
+          <button
+            className='map-tool-button'
+            title='Save to database'
+            onClick={(e) => {
+              const target = e.target as HTMLDivElement;
+              const btn = target.children[0] as HTMLElement;
+              try {
+                btn.click();
+                setTimeout(()=>{setShowLike(false)}, 200);
+              }catch{}
+            }}>
+          <span style={{display: 'flex', justifyContent: 'center', alignItems: 'end', width: '100%'}}>
+              <LikeButton userId={userId} likeableId={likeableId} likeableType='Ride' size='fa-lg'/>&nbsp; Like
+          </span>
+          </button>
+        }
         {isEditor && (
           <button
             className='map-tool-button'

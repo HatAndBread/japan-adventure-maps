@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppContext } from './Context';
 import Home from './Pages/Home';
-import RideIndex from './Rides/RideIndex';
 import Ride from './Rides/Ride';
 import FindRide from './Rides/FindRide';
 import ProfileEdit from './Profiles/ProfileEdit';
@@ -15,8 +14,6 @@ const App = ({ controllerData }: { controllerData: any }) => {
     switch (controllerData.controllerAction) {
       case 'pages#home':
         return <Home />;
-      case 'rides#index':
-        return <RideIndex />;
       case 'rides#show':
         return <Ride />;
       case 'rides#new':

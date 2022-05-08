@@ -7,6 +7,8 @@ ruby '3.1.2'
 gem 'rails', '~> 7.0.2'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
+# Serializer
+gem 'jsonapi-serializer'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets

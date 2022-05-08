@@ -14,6 +14,7 @@ import '@fortawesome/fontawesome-free';
 import { MapEventListenerAdder } from './lib/map-logic';
 import axios from './lib/axios';
 import { navbar } from './lib/navbar';
+import {slideshow} from './lib/slideshow'
 
 Rails.start();
 ActiveStorage.start();
@@ -148,6 +149,7 @@ document.addEventListener('turbo:load', () => {
       }, 3000);
     }
   });
+  slideshow();
 });
 
 const getUserLocation = async () => {

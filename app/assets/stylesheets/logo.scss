@@ -1,26 +1,21 @@
 .logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: calc(100% + 4vw);
-  font-family: 'Rock 3D', monospace;
-  padding: 8px;
-  border-radius: 6px;
-  margin: 16px;
-  max-width: 90vw;
-  img {
-    height: 34vw;
-    max-height: 280px;
-  }
-}
-
-.big-logo {
+  background-image: url('splash.jpg');
   height: fit-content;
-  min-height: 180px;
+  min-height: 200px;
+  background-repeat: no-repeat;
+  background-position-y: top;
+  background-position-x: center;
+  background-size: cover;
+  padding: 16px;
+  border-radius: 16px;
+  margin-top: 40px;
+  margin-bottom: 32px;
+  font-size: 72px;
+  max-width: 80%;
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (max-width: 700px) {
   .logo {
-    font-size: 72px;
+    font-size: 10vw;
   }
 }

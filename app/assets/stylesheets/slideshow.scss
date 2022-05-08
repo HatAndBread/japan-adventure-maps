@@ -1,0 +1,25 @@
+.slideshow-image {
+  width: 200px;
+  height: 200px;
+  background-color: gray;
+  user-select: none;
+  border-radius: 8px;
+  .fa-chevron-left {
+    position: relative;
+    right: 32%;
+    top: 40%;
+    cursor: pointer;
+    background-color: rgba(250, 250, 250, 0.4);
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .fa-chevron-right {
+    position: relative;
+    left: 32%;
+    top: 40%;
+    cursor: pointer;
+    background-color: rgba(250, 250, 250, 0.4);
+    padding: 8px;
+    border-radius: 8px;
+  }
+}
