@@ -7,7 +7,7 @@ if [ "$ANSWER" = "y" ]; then
   TEST_RESULT=$(bundle exec rspec | grep "0 failures")
   FAILURE_NUMBER=${#VAR}
   echo "Failed ${FAILURE_NUMBER} test(s)"
-  if [ "$FAILURE_NUMBER" = "2" ]; then
+  if [ "$FAILURE_NUMBER" = "0" ]; then
     echo "Building Assets 🔨"
     RAILS_ENV=production bundle exec rake assets:precompile
     echo "Pushing to git 🕺 "
