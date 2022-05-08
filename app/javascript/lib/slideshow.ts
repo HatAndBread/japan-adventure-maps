@@ -9,26 +9,30 @@ const slideshow = () => {
     const urls = JSON.parse(slideshow.dataset.urls);
     if (!urls.length) return;
 
-
     image.style.backgroundSize = "cover";
     image.style.backgroundRepeat = "no-repeat";
     image.style.backgroundPositionY = "center";
     image.style.backgroundPositionX = "center";
+
     const setImage = () => {
       if (imageNumber >= urls.length) imageNumber = 0;
       if (imageNumber < 0) imageNumber = urls.length - 1;
       image.style.backgroundImage = `url(${urls[imageNumber]})`;
     };
     setImage();
-    Array.from(image.children).forEach((child, i)=>{
-      child.addEventListener("click", ()=>{
-        if (!i){
-            imageNumber -= 1;
-        } else {
-            imageNumber += 1;
-        }
-        setImage();
-      })
+    if (urls.length === 1) return;
+    slideshow.addEventListener('click', (e)=>{
+      const target = e.target as unknown as HTMLElement;
+      const classList = Array.from(target.classList);
+      const allClasses = classList.concat(Array.from(target.parentElement.classList));
+      if (allClasses.includes('slideshow')) return;
+
+      if (allClasses.includes('fa-chevron-left')) {
+        imageNumber -= 1;
+      } else if (allClasses.includes('fa-chevron-right')) {
+        imageNumber += 1;
+      }
+      setImage();
     })
   });
 };

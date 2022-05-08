@@ -129,6 +129,7 @@ const startReact = () => {
 
 document.addEventListener('turbo:before-render', () => {
   // Clean up React before each page load!
+  console.log('HOWdy')
   window.stop3D = true;
   const root = document.getElementById('root');
   if (root) {
@@ -139,6 +140,7 @@ document.addEventListener('turbo:before-render', () => {
 
 document.addEventListener('turbo:load', () => {
   startReact();
+  slideshow();
   let height = 0;
   Array.from(document.getElementsByClassName('rails-flash')).forEach((item) => {
     if (item.innerText.length) {
@@ -149,7 +151,6 @@ document.addEventListener('turbo:load', () => {
       }, 3000);
     }
   });
-  slideshow();
 });
 
 const getUserLocation = async () => {
