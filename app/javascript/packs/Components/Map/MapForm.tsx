@@ -29,7 +29,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   const [rideId, setRideId] = useState<number>(ctx.controllerData?.ride?.id);
   const [status, setStatus] = useState<'neutral' | 'error' | 'success'>('neutral');
   const [imageURL, setImageURL] = useState<string>();
-  const [rideType, setRideType] = useState(ctx?.controllerData?.ride?.rideType || 'Mixed');
+  const [rideType, setRideType] = useState(ctx?.controllerData?.ride?.rideType || 'hiking');
   const [isEvent, setIsEvent] = useState(ctx.controllerData?.ride?.isEvent ? true : false);
   const saveButtonRef = useRef<HTMLButtonElement>();
 
@@ -101,22 +101,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
     }
     setLoading(false);
   };
-  const rideTypeOptions = [
-    { value: 'Mixed', label: 'Mixed' },
-    { value: 'Gravel', label: 'Gravel' },
-    { value: 'Mountain', label: 'Mountain' },
-    { value: 'Road', label: 'Road' },
-    { value: 'Race', label: 'Race' },
-  ];
-  const selectStyles = {
-    menuList: (provided, state) => ({
-      ...provided,
-      position: 'fixed',
-      backgroundColor: 'white',
-      borderRadius: '6px',
-      width: '258px',
-    }),
-  };
+
   const saveAsNew = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (title === ctx.controllerData?.ride?.title) setTitle(title + ' copy');
@@ -164,11 +149,8 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
                 defaultValue={rideType}
                 onChange={(e) => setRideType(e.target.value)}
                 title='Select ride type'>
-                <option value='Mixed'>Mixed</option>
-                <option value='Gravel'>Gravel</option>
-                <option value='Road'>Road</option>
-                <option value='Mountain'>Mountain</option>
-                <option value='Race'>Race</option>
+                <option value='hiking'>Hiking</option>
+                <option value='cycling'>Cycling</option>
               </select>
             </label>
             {isEvent && (
