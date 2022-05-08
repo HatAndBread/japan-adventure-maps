@@ -1090,7 +1090,6 @@ footer p {
 .slideshow-image {
   width: 200px;
   height: 200px;
-  background-color: gray;
   user-select: none;
   border-radius: 8px;
 }

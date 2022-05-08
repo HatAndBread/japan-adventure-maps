@@ -1,3 +1,5 @@
+import mapImageUrl from '../../assets/images/map.png'
+
 const slideshow = () => {
   const data = document.getElementsByClassName("slideshow");
   if (!data.length) return;
@@ -7,7 +9,7 @@ const slideshow = () => {
     const image = slideshow.children[0] as HTMLDivElement;
     let imageNumber = 0;
     const urls = JSON.parse(slideshow.dataset.urls);
-    if (!urls.length) return;
+    if (!urls.length) urls.push(mapImageUrl);
 
     image.style.backgroundSize = "cover";
     image.style.backgroundRepeat = "no-repeat";
