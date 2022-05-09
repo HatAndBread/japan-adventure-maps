@@ -37,6 +37,16 @@ type User = {
   createdAt: string;
   username: string;
 };
+
+type Like = {
+  userId: number;
+  likeableId: number;
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  likeableType: string;
+};
+
 export interface ContextProps {
   controllerData: {
     controllerAction: string;
@@ -45,6 +55,7 @@ export interface ContextProps {
     profile: Profile;
     profileBeingViewed?: Profile;
     ride?: Ride;
+    likes?: Like[];
     participants?: {
       avatar: null | string;
       createdAt: null | string;

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useRideContext } from '../../Rides/Ride';
 import { Map } from 'mapbox-gl';
 import { useAppContext } from '../../Context';
@@ -20,6 +20,7 @@ const MapTools = ({
 }) => {
   const map = window.mapboxMap as Map;
   const ctx = useAppContext();
+  const likesUserIds = useMemo(()=> ctx.controllerData?.likes?.map((like)=> like.userId), [])
   const userId = ctx.controllerData?.currentUser?.id;
   const likeableId = ctx.controllerData?.ride?.id
   const creatorId = ctx.controllerData?.ride?.userId;
@@ -43,7 +44,8 @@ const MapTools = ({
     isEditor,
     setLoaderText,
   } = useRideContext();
-  const [showLike, setShowLike] = useState(!isEditor && creatorId !== userId);
+  const [showLike, setShowLike] = useState(!isEditor && creatorId !== userId && !likesUserIds.includes(userId));
+  const [likesCount, setLikesCount] = useState(likesUserIds.length)
   const getStyle = (myTool: string) =>
     myTool === tool ? { borderColor: '#0bda51', boxShadow: '0 0 2px 2px #0bda51' } : {};
   const handleClick = (type: string) => {
@@ -51,7 +53,7 @@ const MapTools = ({
     setPreviousTool(tool);
     setTool(type);
   };
-
+  
   const clearMap = () => {
     const confirmed = window.confirm('Are you sure you want to clear this map?');
     if (confirmed) {
@@ -157,6 +159,10 @@ const MapTools = ({
         <div className='closer' onClick={hideMapTools}>
           <i className='fas fa-times pointer'></i>
         </div>
+        <div style={{color: 'darkred'}}>
+          <i className='fa fa-heart'></i>
+          <span style={{position: 'relative', top: '-4px', fontSize: '11px'}}>{likesCount}</span>
+        </div>
         <div style={{ color: 'rgba(180,120,120, 0.9)' }}>Dirt Road: ----</div>
         <div style={{ color: 'rgba(180,40,250, 0.6)' }}>Bike Path: ----</div>
         <div style={{ color: 'rgba(23, 136, 0, 1)' }}>Foot Path: ----</div>
@@ -169,7 +175,10 @@ const MapTools = ({
               const btn = target.children[0] as HTMLElement;
               try {
                 btn.click();
-                setTimeout(()=>{setShowLike(false)}, 200);
+                setTimeout(()=>{
+                  setLikesCount(likesCount + 1);
+                  setShowLike(false);
+                }, 200);
               }catch{}
             }}>
           <span style={{display: 'flex', justifyContent: 'center', alignItems: 'end', width: '100%'}}>

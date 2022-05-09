@@ -129,7 +129,6 @@ const startReact = () => {
 
 document.addEventListener('turbo:before-render', () => {
   // Clean up React before each page load!
-  console.log('HOWdy')
   window.stop3D = true;
   const root = document.getElementById('root');
   if (root) {

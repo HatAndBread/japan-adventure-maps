@@ -17,6 +17,7 @@ class RidesController < ApplicationController
 
   def show
     @participants = @ride.riders
+    @likes = @ride.likes
     @comments = @ride.comments.order(created_at: :asc).map { |comment| comment.with_user }
     use_react
   end
@@ -80,7 +81,7 @@ class RidesController < ApplicationController
   end
 
   def fetch_ride
-    @ride = Ride.find(params[:id])
+    @ride = Ride.includes(:likes).find(params[:id])
   end
 
   def save_as_leader
