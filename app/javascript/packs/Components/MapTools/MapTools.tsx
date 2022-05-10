@@ -47,7 +47,7 @@ const MapTools = ({
     isEditor,
     setLoaderText,
   } = useRideContext();
-  const [showLike, setShowLike] = useState(!isEditor && creatorId !== userId && !likesUserIds.includes(userId));
+  const [showLike, setShowLike] = useState(userId && !isEditor && creatorId !== userId && !likesUserIds.includes(userId));
   const [likesCount, setLikesCount] = useState(likesUserIds?.length || 0)
   const getStyle = (myTool: string) =>
     myTool === tool ? { borderColor: '#0bda51', boxShadow: '0 0 2px 2px #0bda51' } : {};
