@@ -65,6 +65,16 @@ class RidesController < ApplicationController
     use_react
   end
 
+  def copy
+    @ride = Ride.find(params[:id])
+    copied_ride = Ride.new(user_id: current_user.id, title: "#{@ride.title} copy", start_lng: @ride.start_lng, start_lat: @ride.start_lat, route: @ride.route, popups: @ride.popups, map_image_url: @ride.map_image_url, distance: @ride.distance, ride_type: @ride.ride_type, max_elevation: @ride.max_elevation, elevation_gain: @ride.elevation_gain, is_event: false)
+    if copied_ride.save!
+      render json: { success: true, id: copied_ride.id }.to_json
+    else
+      failed
+    end
+  end
+
   private
 
   def ride_params

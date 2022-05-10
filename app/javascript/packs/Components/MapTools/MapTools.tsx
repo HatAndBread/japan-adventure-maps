@@ -2,7 +2,10 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useRideContext } from '../../Rides/Ride';
 import { Map } from 'mapbox-gl';
 import { useAppContext } from '../../Context';
-import { Route, drawRoute, draw } from '../../../lib/map-logic';
+import { Route, drawRoute, routeDistance, maxElevation, elevationChangeCalculation } from '../../../lib/map-logic';
+import {getElevationGain} from '../../../lib/geojson-elevation.js'
+import {flash} from '../../../lib/flash';
+import axios from '../../../lib/axios';
 import { last } from 'lodash';
 import toolbox from '../../../../assets/images/toolbox.svg';
 import Exporter from '../../../lib/Exporter';
@@ -45,7 +48,7 @@ const MapTools = ({
     setLoaderText,
   } = useRideContext();
   const [showLike, setShowLike] = useState(!isEditor && creatorId !== userId && !likesUserIds.includes(userId));
-  const [likesCount, setLikesCount] = useState(likesUserIds.length)
+  const [likesCount, setLikesCount] = useState(likesUserIds?.length || 0)
   const getStyle = (myTool: string) =>
     myTool === tool ? { borderColor: '#0bda51', boxShadow: '0 0 2px 2px #0bda51' } : {};
   const handleClick = (type: string) => {
@@ -100,6 +103,15 @@ const MapTools = ({
     new Exporter({ route, routeName: title }).download(fileFormat);
   };
 
+  const copyRide = async () => {
+    const res = await axios.post(`/rides/${ctx.controllerData.ride.id}/copy`);
+    if (res?.data?.success && res.data.id){
+      window.location.href = `/rides/${res.data.id}`
+    } else {
+      flash('There was an error copying this ride. \n Please try again later.', "error");
+    }
+  };
+
   const getToolName = () => {
     switch (tool) {
       case 'point':
@@ -133,16 +145,26 @@ const MapTools = ({
 
   if (showTools)
     return (
-      <div className='MapTools' ref={ref}>
+      <div className="MapTools" ref={ref}>
         {showExportModal && (
           <Modal onClose={() => setShowExportModal(false)}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <h2>Export {title}</h2>
-              <div style={{ marginBottom: '16px' }}>
-                <label htmlFor='format'>Choose your file format</label>{' '}
-                <select defaultValue={fileFormat} name='format' onChange={(e) => setFileFormat(e.target.value)}>
-                  <option value='.gpx'>.gpx</option>
-                  <option value='.kml'>.kml</option>
+              <div style={{ marginBottom: "16px" }}>
+                <label htmlFor="format">Choose your file format</label>{" "}
+                <select
+                  defaultValue={fileFormat}
+                  name="format"
+                  onChange={(e) => setFileFormat(e.target.value)}
+                >
+                  <option value=".gpx">.gpx</option>
+                  <option value=".kml">.kml</option>
                   {/* <option value='.tcx'>.tcx</option> TODO  */}
                 </select>
               </div>
@@ -150,245 +172,313 @@ const MapTools = ({
                 onClick={() => {
                   window.isProbablyMobile && setShowTools(false);
                   exportToGpx();
-                }}>
+                }}
+              >
                 Export
               </button>
             </div>
           </Modal>
         )}
-        <div className='closer' onClick={hideMapTools}>
-          <i className='fas fa-times pointer'></i>
+        <div className="closer" onClick={hideMapTools}>
+          <i className="fas fa-times pointer"></i>
         </div>
-        <div style={{color: 'darkred'}}>
-          <i className='fa fa-heart'></i>
-          <span style={{position: 'relative', top: '-4px', fontSize: '11px'}}>{likesCount}</span>
-        </div>
-        <div style={{ color: 'rgba(180,120,120, 0.9)' }}>Dirt Road: ----</div>
-        <div style={{ color: 'rgba(180,40,250, 0.6)' }}>Bike Path: ----</div>
-        <div style={{ color: 'rgba(23, 136, 0, 1)' }}>Foot Path: ----</div>
-        {showLike &&
+        {!isEditor && (
+          <div style={{ color: "darkred" }}>
+            <i className="fa fa-heart"></i>
+            <span
+              style={{ position: "relative", top: "-4px", fontSize: "11px" }}
+            >
+              {likesCount}
+            </span>
+          </div>
+        )}
+        <div style={{ color: "rgba(180,120,120, 0.9)" }}>Dirt Road: ----</div>
+        <div style={{ color: "rgba(180,40,250, 0.6)" }}>Bike Path: ----</div>
+        <div style={{ color: "rgba(23, 136, 0, 1)" }}>Foot Path: ----</div>
+        {showLike && (
           <button
-            className='map-tool-button'
-            title='Save to database'
+            className="map-tool-button"
+            title="Save to database"
             onClick={(e) => {
               const target = e.target as HTMLDivElement;
               const btn = target.children[0] as HTMLElement;
               try {
                 btn.click();
-                setTimeout(()=>{
+                setTimeout(() => {
                   setLikesCount(likesCount + 1);
                   setShowLike(false);
                 }, 200);
-              }catch{}
-            }}>
-          <span style={{display: 'flex', justifyContent: 'center', alignItems: 'end', width: '100%'}}>
-              <LikeButton userId={userId} likeableId={likeableId} likeableType='Ride' size='fa-lg'/>&nbsp; Like
-          </span>
+              } catch {}
+            }}
+          >
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "end",
+                width: "100%",
+              }}
+            >
+              <LikeButton
+                userId={userId}
+                likeableId={likeableId}
+                likeableType="Ride"
+                size="fa-lg"
+              />
+              &nbsp; Like
+            </span>
           </button>
-        }
+        )}
         {isEditor && (
           <button
-            className='map-tool-button'
-            title='Save to database'
+            className="map-tool-button"
+            title="Save to database"
             onClick={() => {
               window.isProbablyMobile && setShowTools(false);
               save();
-            }}>
-            <i className='fas fa-save big-icon'></i> Save
+            }}
+          >
+            <i className="fas fa-save big-icon"></i> Save
           </button>
         )}
         {route?.length ? (
           <button
-            className='map-tool-button'
-            title='Export to gpx or kml file'
+            className="map-tool-button"
+            title="Export to gpx or kml file"
             onClick={() => {
               setShowExportModal(true);
-            }}>
+            }}
+          >
             <div>
-              <i className='fas fa-file-export big-icon' /> Export
+              <i className="fas fa-file-export big-icon" /> Export
             </div>
           </button>
         ) : (
           <button
-            className='map-tool-button'
-            title='Import from gpx or kml file'
+            className="map-tool-button"
+            title="Import from gpx or kml file"
             onClick={() => {
               window.isProbablyMobile && setShowTools(false);
               setShowRideWithModal(true);
-            }}>
+            }}
+          >
             <div>
-              <i className='fas fa-file-import big-icon'></i> Import
+              <i className="fas fa-file-import big-icon"></i> Import
             </div>
           </button>
         )}
         {ctx.controllerData.currentUser?.id &&
           ctx.controllerData.ride?.userId &&
-          ctx.controllerData.currentUser.id === ctx.controllerData.ride.userId &&
-          ctx.controllerData.controllerAction === 'rides#show' && (
+          ctx.controllerData.currentUser.id ===
+            ctx.controllerData.ride.userId &&
+          ctx.controllerData.controllerAction === "rides#show" && (
             <button
-              className='map-tool-button'
-              title='Edit this map'
+              className="map-tool-button"
+              title="Edit this map"
               onClick={() => {
-                window.location.replace(`/rides/${ctx.controllerData.ride.id}/edit`);
-              }}>
+                window.location.replace(
+                  `/rides/${ctx.controllerData.ride.id}/edit`
+                );
+              }}
+            >
               <div>
-                <i className='fas fa-edit big-icon'></i> Edit
+                <i className="fas fa-edit big-icon"></i> Edit
               </div>
             </button>
           )}
         {!isEditor && (
-          <button
-            onClick={() => {
-              window.location.replace(`/rides/${ctx.controllerData.ride.id}/three_d`);
-            }}
-            title='3D Tour'
-            className='map-tool-button big-icon'>
-            <div>
-              <i className='fas fa-cube big-icon'></i> 3D Tour
-            </div>
-          </button>
+          <>
+            {creatorId !== userId && userId && (
+              <button className="map-tool-button" title="Copy this ride" onClick={copyRide}>
+                <div>
+                  <i className="fas fa-copy big-icon"></i> Copy
+                </div>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                window.location.replace(
+                  `/rides/${ctx.controllerData.ride.id}/three_d`
+                );
+              }}
+              title="3D Tour"
+              className="map-tool-button big-icon"
+            >
+              <div>
+                <i className="fas fa-cube big-icon"></i> 3D Tour
+              </div>
+            </button>
+          </>
         )}
-        <div className='tool-name-display'>
-          <div style={{ textDecoration: 'underline' }}>Current Tool</div>
+
+        <div className="tool-name-display">
+          <div style={{ textDecoration: "underline" }}>Current Tool</div>
           <div>{getToolName()}</div>
         </div>
         {isEditor && (
-          <div className='tool-row'>
+          <div className="tool-row">
             <button
-              style={getStyle('point')}
-              onClick={() => handleClick('point')}
-              title='Follow roads'
-              className='map-tool-button three-buttons big-icon'>
-              <i className='fas fa-route'></i>
+              style={getStyle("point")}
+              onClick={() => handleClick("point")}
+              title="Follow roads"
+              className="map-tool-button three-buttons big-icon"
+            >
+              <i className="fas fa-route"></i>
             </button>
             <button
-              style={getStyle('line')}
-              onClick={() => handleClick('line')}
-              className='map-tool-button three-buttons big-icon'
-              title='Draw lines'>
-              <i className='fas fa-draw-polygon'></i>
+              style={getStyle("line")}
+              onClick={() => handleClick("line")}
+              className="map-tool-button three-buttons big-icon"
+              title="Draw lines"
+            >
+              <i className="fas fa-draw-polygon"></i>
             </button>
             <button
-              style={getStyle('cp')}
-              title='Control point'
-              onClick={() => handleClick('cp')}
-              className='map-tool-button three-buttons'>
-              <i className='fas fa-dot-circle'></i>
+              style={getStyle("cp")}
+              title="Control point"
+              onClick={() => handleClick("cp")}
+              className="map-tool-button three-buttons"
+            >
+              <i className="fas fa-dot-circle"></i>
             </button>
           </div>
         )}
         {!isEditor && (
-          <div className='tool-row'>
+          <div className="tool-row">
             <button
-              style={getStyle('no-tools')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('no-tools')}
-              title='No tools'>
-              <i className='fas fa-mouse-pointer'></i>
+              style={getStyle("no-tools")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("no-tools")}
+              title="No tools"
+            >
+              <i className="fas fa-mouse-pointer"></i>
             </button>
             <button
-              style={getStyle('google')}
-              title='Google Street View'
-              onClick={() => handleClick('google')}
-              className='map-tool-button three-buttons big-icon'>
-              <i className='fas fa-street-view'></i>
+              style={getStyle("google")}
+              title="Google Street View"
+              onClick={() => handleClick("google")}
+              className="map-tool-button three-buttons big-icon"
+            >
+              <i className="fas fa-street-view"></i>
             </button>
             <button
-              style={getStyle('flickr')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('flickr')}
-              title='Search for photographs from this location'>
-              <i className='fas fa-camera'></i>
+              style={getStyle("flickr")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("flickr")}
+              title="Search for photographs from this location"
+            >
+              <i className="fas fa-camera"></i>
             </button>
             <button
-              style={getStyle('info')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('info')}
-              title='Get info about this location'>
-              <i className='fas fa-info'></i>
+              style={getStyle("info")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("info")}
+              title="Get info about this location"
+            >
+              <i className="fas fa-info"></i>
             </button>
             <button
-              style={getStyle('weather')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('weather')}
-              title='No tools'>
-              <i className='fas fa-cloud-sun'></i>
+              style={getStyle("weather")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("weather")}
+              title="No tools"
+            >
+              <i className="fas fa-cloud-sun"></i>
             </button>
           </div>
         )}
         {isEditor && (
-          <div className='tool-row'>
-            <button className='map-tool-button three-buttons big-icon' title='undo' onClick={undo}>
-              <i className='fas fa-undo'></i>
+          <div className="tool-row">
+            <button
+              className="map-tool-button three-buttons big-icon"
+              title="undo"
+              onClick={undo}
+            >
+              <i className="fas fa-undo"></i>
             </button>
-            <button className='map-tool-button three-buttons big-icon' title='redo' onClick={redo}>
-              <i className='fas fa-redo'></i>
+            <button
+              className="map-tool-button three-buttons big-icon"
+              title="redo"
+              onClick={redo}
+            >
+              <i className="fas fa-redo"></i>
             </button>
-            <button className='map-tool-button three-buttons big-icon' title='Clear map' onClick={clearMap}>
-              <i className='fas fa-trash'></i>
+            <button
+              className="map-tool-button three-buttons big-icon"
+              title="Clear map"
+              onClick={clearMap}
+            >
+              <i className="fas fa-trash"></i>
             </button>
           </div>
         )}
         {isEditor && (
-          <div className='tool-row'>
+          <div className="tool-row">
             <button
-              style={getStyle('pop-up')}
-              onClick={() => handleClick('pop-up')}
-              title='Point of interest'
-              className='map-tool-button three-buttons big-icon'>
-              <i className='fas fa-map-pin'></i>
+              style={getStyle("pop-up")}
+              onClick={() => handleClick("pop-up")}
+              title="Point of interest"
+              className="map-tool-button three-buttons big-icon"
+            >
+              <i className="fas fa-map-pin"></i>
             </button>
             <button
-              style={getStyle('google')}
-              title='Google Street View'
-              onClick={() => handleClick('google')}
-              className='map-tool-button three-buttons big-icon'>
-              <i className='fas fa-street-view'></i>
+              style={getStyle("google")}
+              title="Google Street View"
+              onClick={() => handleClick("google")}
+              className="map-tool-button three-buttons big-icon"
+            >
+              <i className="fas fa-street-view"></i>
             </button>
             <button
-              style={getStyle('flickr')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('flickr')}
-              title='Search for photographs from this location'>
-              <i className='fas fa-camera'></i>
-            </button>
-          </div>
-        )}
-        {isEditor && (
-          <div className='tool-row'>
-            <button
-              style={getStyle('no-tools')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('no-tools')}
-              title='No tools'>
-              <i className='fas fa-mouse-pointer'></i>
-            </button>
-            <button
-              style={getStyle('info')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('info')}
-              title='Get info about this location'>
-              <i className='fas fa-info'></i>
-            </button>
-            <button
-              style={getStyle('weather')}
-              className='map-tool-button three-buttons big-icon'
-              onClick={() => handleClick('weather')}
-              title='No tools'>
-              <i className='fas fa-cloud-sun'></i>
+              style={getStyle("flickr")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("flickr")}
+              title="Search for photographs from this location"
+            >
+              <i className="fas fa-camera"></i>
             </button>
           </div>
         )}
         {isEditor && (
-          <div className='tool-row'>
+          <div className="tool-row">
+            <button
+              style={getStyle("no-tools")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("no-tools")}
+              title="No tools"
+            >
+              <i className="fas fa-mouse-pointer"></i>
+            </button>
+            <button
+              style={getStyle("info")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("info")}
+              title="Get info about this location"
+            >
+              <i className="fas fa-info"></i>
+            </button>
+            <button
+              style={getStyle("weather")}
+              className="map-tool-button three-buttons big-icon"
+              onClick={() => handleClick("weather")}
+              title="No tools"
+            >
+              <i className="fas fa-cloud-sun"></i>
+            </button>
+          </div>
+        )}
+        {isEditor && (
+          <div className="tool-row">
             <select
               defaultValue={directionsType}
               onChange={(e) => setDirectionsType(e.target.value)}
-              title='Directions type'
-              style={{ width: '100%', margin: '4px' }}>
-              <option value='walking'>Walking</option>
-              <option value='cycling'>Cycling</option>
-              <option value='driving'>Driving</option>
+              title="Directions type"
+              style={{ width: "100%", margin: "4px" }}
+            >
+              <option value="walking">Walking</option>
+              <option value="cycling">Cycling</option>
+              <option value="driving">Driving</option>
             </select>
           </div>
         )}

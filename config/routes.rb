@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :comments, only: [:create]
     member do
       get :three_d, to: 'rides#three_d'
+      post :copy, to: 'rides#copy'
     end
   end
 
