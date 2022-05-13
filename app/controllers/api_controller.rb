@@ -12,27 +12,8 @@ class ApiController < ApplicationController
   def search_rides
     sw = params[:bounds]['_sw']
     ne = params[:bounds]['_ne']
-    rides = Ride.select(
-      :title,
-      :description,
-      :id,
-      :start_time,
-      :created_at,
-      :updated_at,
-      :map_image_url,
-      :start_lng,
-      :start_lat,
-      :distance,
-      :ride_type,
-      :max_elevation,
-      :elevation_gain,
-      :elevation_change,
-      :is_event
-    )
-                .where(is_event: true)
-                .where('start_time > ?', Date.yesterday)
-                .where('start_lng < ? AND start_lng > ? AND start_lat < ? AND start_lat > ?', ne['lng'], sw['lng'], ne['lat'], sw['lat'])
-    render json: rides.to_json
+    rides = Ride.top(limit: 10, filter: "start_lng < #{ne['lng']} AND start_lng > #{sw['lng']} AND start_lat < #{ne['lat']} AND start_lat > #{sw['lat']}")
+    render json: RideSerializer.new(rides).serializable_hash.to_json
   end
 
   def user_location

@@ -3,7 +3,7 @@ module Likeable
 
   class_methods do
     def top(limit: nil, filter: nil)
-      joins(:likes)
+      left_outer_joins(:likes)
         .select("#{table_name}.*, COUNT(likes.id) as likes_count")
         .group("#{table_name}.id")
         .order(likes_count: :desc)

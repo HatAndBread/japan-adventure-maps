@@ -1,111 +1,190 @@
-import React, { useEffect, useState } from 'react';
-import MapboxMap from '../Components/Map/MapboxMap';
-import { MapEventListenerAdder, addMarker, createMarker } from '../../lib/map-logic';
-import { LngLat, Map } from 'mapbox-gl';
-import { debounce } from 'lodash';
-import axios from '../../lib/axios';
-import { useAppContext } from '../Context';
-import { Ride } from '../Types/Models';
-import Modal from '../Components/Modal/Modal';
-import { DateTime } from 'luxon';
-import placeHolderImage from '../../../assets/images/map.png';
-import { useMapSize } from '../Hooks/useMapSize';
+import React, { useEffect, useState, useRef } from "react";
+import MapboxMap from "../Components/Map/MapboxMap";
+import { LngLat, Map } from "mapbox-gl";
+import { useAppContext } from "../Context";
+import { Ride } from "../Types/Models";
+import Modal from "../Components/Modal/Modal";
+import { DateTime } from "luxon";
+import placeHolderImage from "../../../assets/images/map.png";
+import { useMapSize } from "../Hooks/useMapSize";
+import { MapLayerMouseEvent } from "mapbox-gl";
+import hike from "../../../assets/images/hike.png";
+import bike from "../../../assets/images/ride.png";
+import {slideshow} from '../../lib/slideshow';
 
-const START_ZOOM = 8.5;
-
-const zoomWarning = 'Zoom in closer to search for rides';
 const FindRide = () => {
   const map = window.mapboxMap as Map;
-  const { profile } = useAppContext().controllerData;
-  const [zoomInWarning, setZoomInWarning] = useState(map.getZoom() < 7 ? zoomWarning : '');
-  const [rides, setRides] = useState<Ride[]>([]);
-  const [rideModalContent, setRideModalContent] = useState<null | Ride>(null);
-  const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
-  useMapSize({ height: '100vh' });
-  useEffect(() => {
-    const markers = [];
-    rides.forEach((ride) => {
-      const marker = createMarker('start-marker');
-      marker.setLngLat(new LngLat(ride.start_lng, ride.start_lat)).setOffset([0, -20]);
-      addMarker(marker);
-      markers.push(marker);
-      marker.getElement().addEventListener('click', () => {
-        setRideModalContent(ride);
-      });
-    });
-    return () => {
-      markers.forEach((marker) => marker.remove());
-    };
-  }, [rides]);
-  useEffect(() => {
-    const findRides = () => {
-      if (map.getZoom() < 7) {
-        setZoomInWarning(zoomWarning);
-      } else {
-        setZoomInWarning('');
-        const bounds = map.getBounds();
-        axios.post('/api/search_rides', { bounds }).then((res) => Array.isArray(res?.data) && setRides(res.data));
-      }
-    };
-    const onMove = debounce(() => {
-      findRides();
-    }, 200);
-    // @ts-ignore
-    mapEventListenerAdder.on({ type: 'move', listener: onMove });
-    map.once('idle', findRides);
-    map.once('idle', () => {
-      if (map.getStyle()?.name !== window.baseMapName) {
-        map.setStyle(window.baseMapURL);
-      }
-    });
 
-    if (profile?.startLng && profile?.startLat) {
-      map.jumpTo({ center: new LngLat(profile.startLng, profile.startLat), zoom: START_ZOOM });
-    } else if (window.userLocation?.length) {
-      map.jumpTo({ center: new LngLat(window.userLocation[0], window.userLocation[1]), zoom: 4 });
+  const { allRides, controllerData, mapReady } = useAppContext();
+  const [rides, setRides] = useState<Ride[]>([]);
+  const [hikes, setHikes] = useState<Ride[]>([]);
+  const [rideModalContent, setRideModalContent] = useState<null | Ride>(null);
+  const mouseEnter = useRef(() => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  const mouseLeave = useRef(() => {
+    map.getCanvas().style.cursor = window.currentCursor || "initial";
+  });
+  const onRideClick = useRef((e: MapLayerMouseEvent) => {
+    const props = e.features[0].properties;
+    setRideModalContent(props as Ride)
+    slideshow();
+  });
+  const iconsLoaded = useRef(0);
+  useMapSize({ height: "100vh" });
+  useEffect(() => {
+    setRides(allRides.filter((r) => r.rideType === "cycling"));
+    setHikes(allRides.filter((r) => r.rideType === "hiking"));
+  }, [allRides]);
+
+  const parseImages = (string: string) => {
+    try {
+      return JSON.parse(string);
+    } catch {
+      return [];
     }
-    return () => {
-      map.off('move', onMove);
+  };
+
+  useEffect(() => {
+    if (!mapReady) return;
+    if (!rides.length) return;
+    if (!hikes.length) return;
+    if (map.getSource("all-rides") || map.getLayer("all-rides-layer")) return;
+    if (map.getSource("all-hikes") || map.getLayer("all-hikes-layer")) return;
+
+    const loadSources = () => {
+      [rides, hikes].forEach((x, i) => {
+        const type = i ? "hikes" : "rides";
+        const rideData = {
+          type: "FeatureCollection",
+          features: x.map((r) => {
+            return {
+              type: "Feature",
+              properties: {
+                id: r.id,
+                likesCount: r.likesCount,
+                description: r.description,
+                title: r.title,
+                maxElevation: r.maxElevation,
+                elevationGain: r.elevationGain,
+                rideType: r.rideType,
+                featuredImages: r.featuredImages,
+                distance: r.distance,
+              },
+              geometry: {
+                type: "Point",
+                coordinates: [r.startLng, r.startLat],
+              },
+            };
+          }),
+        };
+        map.addSource(`all-${type}`, {
+          type: "geojson",
+          // @ts-ignore
+          data: rideData,
+        });
+        map.addLayer({
+          id: `all-${type}-layer`,
+          type: "symbol",
+          source: `all-${type}`,
+          layout: {
+            "icon-image": type === "hikes" ? hike : bike,
+            "icon-size": 0.5,
+            "icon-allow-overlap": false,
+          },
+        });
+        map.on("mouseenter", `all-${type}-layer`, mouseEnter.current);
+        map.on("mouseleave", `all-${type}-layer`, mouseLeave.current);
+        map.on("click", `all-${type}-layer`, onRideClick.current);
+      });
     };
+    if (map.hasImage(hike) && map.hasImage(bike)) {
+      loadSources();
+    } else {
+      [hike, bike].forEach((url) => {
+        if (!map.hasImage(url)) {
+          map.loadImage(url, (_, image) => {
+            map.addImage(url, image);
+            iconsLoaded.current += 1;
+            if (iconsLoaded.current === 2) loadSources();
+          });
+        }
+      });
+    }
+  }, [rides, hikes, mapReady]);
+
+  useEffect(() => {
+    // Clean up after navigation
+    const l = () => {
+      ["all-rides", "all-hikes"].forEach((source) => {
+        if (map.getLayer(`${source}-layer`)) {
+          map.removeLayer(`${source}-layer`);
+          map.removeSource(source);
+        }
+      });
+      map.off("mouseenter", `all-hikes-layer`, mouseEnter.current);
+      map.off("mouseleave", `all-hikes-layer`, mouseLeave.current);
+      map.off("click", `all-hikes-layer`, onRideClick.current);
+      map.off("mouseenter", `all-rides-layer`, mouseEnter.current);
+      map.off("mouseleave", `all-rides-layer`, mouseLeave.current);
+      map.off("click", `all-rides-layer`, onRideClick.current);
+      document.removeEventListener("turbo:before-fetch-request", l);
+      window.removeEventListener("popstate", l);
+    };
+
+    document.addEventListener("turbo:before-fetch-response", l);
+    window.addEventListener("popstate", l);
   }, []);
+
   return (
-    <div className='FindRide'>
+    <div className="FindRide">
       {rideModalContent && (
         <Modal onClose={() => setRideModalContent(null)}>
-          <div className='find-ride-modal'>
+          <div className="find-ride-modal">
             <h1>{rideModalContent.title}</h1>
-            <p style={{ marginBottom: '8px' }}>{rideModalContent.description}</p>
+            <p style={{ marginBottom: "8px" }}>
+              {rideModalContent.description}
+            </p>
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-              }}>
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
               <a
-                className='link-button'
+                className="link-button"
                 href={`/rides/${rideModalContent.id}`}
-                style={{ width: '100%', maxWidth: '224px', margin: '8px' }}>
-                View Ride
+                style={{ width: "100%", maxWidth: "224px", margin: "8px" }}
+              >
+                View Route
               </a>
               <a
-                className='link-button'
+                className="link-button"
                 href={`/rides/${rideModalContent.id}/three_d`}
-                style={{ width: '100%', maxWidth: '224px', margin: '8px' }}>
+                style={{ width: "100%", maxWidth: "224px", margin: "8px" }}
+              >
                 3D Tour
               </a>
             </div>
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <ul style={{ marginTop: '8px' }}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <ul style={{ marginTop: "8px" }}>
                 <li>
-                  <strong>Start Time: </strong>
-                  {rideModalContent.start_time &&
-                    DateTime.fromISO(rideModalContent.start_time).toLocaleString(DateTime.DATETIME_MED)}
-                </li>
-                <li>
-                  <strong>Ride Type: </strong>
-                  {rideModalContent.ride_type}
+                  <strong>Type: </strong>
+                  {rideModalContent.rideType}&nbsp;
+                  {rideModalContent.rideType === "hiking" ? (
+                    <i className="fas fa-hiking fa-lg"></i>
+                  ) : (
+                    <i className="fas fa-bicycle fa-lg"></i>
+                  )}
                 </li>
                 <li>
                   <strong>Distance: </strong>
@@ -113,23 +192,32 @@ const FindRide = () => {
                 </li>
                 <li>
                   <strong>Max Elevation: </strong>
-                  {rideModalContent.max_elevation} m
+                  {rideModalContent.maxElevation} m
                 </li>
                 <li>
                   <strong>Total Elevation Gain: </strong>
-                  {rideModalContent.elevation_gain} m
+                  {rideModalContent.elevationGain} m
                 </li>
               </ul>
             </div>
-            <a href={`/rides/${rideModalContent.id}`}>
-              <img
-                src={rideModalContent.map_image_url ? rideModalContent.map_image_url : placeHolderImage}
-                style={{ maxWidth: '300px', maxHeight: '300px' }}></img>
-            </a>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <div
+                className="slideshow"
+                data-urls={rideModalContent.featuredImages}
+              >
+                <div className="slideshow-image">
+                  {parseImages(rideModalContent.featuredImages).length > 1 && (
+                    <>
+                      <i className="fas fa-chevron-left fa-lg"></i>
+                      <i className="fas fa-chevron-right fa-lg"></i>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </Modal>
       )}
-      {zoomInWarning && <div className='zoom-in-warning'>{zoomInWarning}</div>}
       <MapboxMap />
     </div>
   );

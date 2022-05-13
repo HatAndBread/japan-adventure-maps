@@ -18,7 +18,7 @@ class RidesController < ApplicationController
   def show
     @participants = @ride.riders
     @likes = @ride.likes
-    @comments = @ride.comments.order(created_at: :asc).map { |comment| comment.with_user }
+    @comments = @ride.comments.order(created_at: :asc).map(&:with_user)
     use_react
   end
 
@@ -75,11 +75,30 @@ class RidesController < ApplicationController
     end
   end
 
+  def all_rides
+    render json: RideSerializer.new(Ride.where(is_private: false)).serializable_hash.to_json
+  end
+
   private
 
   def ride_params
-    params.require(:ride).permit(:title, :start_lng, :start_lat, :start_time, :description, :route, :popups,
-                                 :map_image_url, :user_id, :distance, :ride_type, :max_elevation, :elevation_gain, :elevation_change, :is_event)
+    params.require(:ride).permit(
+      :title,
+      :start_lng,
+      :start_lat,
+      :start_time,
+      :description,
+      :route,
+      :popups,
+      :map_image_url,
+      :user_id,
+      :distance,
+      :ride_type,
+      :max_elevation,
+      :elevation_gain,
+      :elevation_change,
+      :is_event
+    )
   end
 
   def participant_params

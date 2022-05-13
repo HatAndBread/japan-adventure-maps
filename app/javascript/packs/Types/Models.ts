@@ -6,19 +6,21 @@ export type Ride = {
   created_at: string;
   description: string;
   id: number;
-  map_image_url: string;
-  start_lat: number;
-  start_lng: number;
-  start_time: string;
+  mapImageUrl: string;
+  startLat: number;
+  startLng: number;
+  startTime: string;
   title: string;
-  updated_at: string;
+  updatedAt: string;
   distance: number;
-  elevation_gain: number;
-  elevation_change: number;
-  max_elevation: number;
-  ride_type: string;
-  is_private: boolean;
-  is_event: boolean;
+  elevationGain: number;
+  elevationChange: number;
+  maxElevation: number;
+  rideType: string;
+  isPrivate: boolean;
+  isEvent: boolean;
+  likesCount?: number;
+  featuredImages: string;
 };
 
 export type RideContextProps = {

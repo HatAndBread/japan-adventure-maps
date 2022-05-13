@@ -39,6 +39,7 @@ declare module 'window' {
       baseMapName: string;
       baseMapURL: string;
       currentCursor: string;
+      mapFinishedLoading: boolean;
     }
   }
 }

@@ -1,3 +1,4 @@
+import {Ride as RideType} from './Models';
 export type Ride = {
   createdAt: null | string;
   updatedAt: null | string;
@@ -48,6 +49,8 @@ type Like = {
 };
 
 export interface ContextProps {
+  allRides: RideType[];
+  mapReady: Boolean;
   controllerData: {
     controllerAction: string;
     currentUser: User;

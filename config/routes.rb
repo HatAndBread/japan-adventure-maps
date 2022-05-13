@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get '/privacy_policy', to: 'pages#privacy_policy'
   get '/delete_account', to: 'pages#delete_account'
   get '/find_a_ride', to: 'rides#find_a_ride'
+  get '/all_rides', to: 'rides#all_rides'
   post '/participate', to: 'rides#participate'
 
   get '/api/user_location', to: 'api#user_location'

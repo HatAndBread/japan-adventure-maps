@@ -4,7 +4,7 @@ shared_examples_for 'likeable' do
   describe '#top' do
     let(:model) { create(described_class.to_s.downcase) }
     let(:model1) { create(described_class.to_s.downcase) }
-    let(:model2) { create(described_class.to_s.downcase) }
+    let!(:model2) { create(described_class.to_s.downcase) }
 
     it 'returns all the most liked objects in order when called without any arguements' do
       3.times { create(:like, likeable_type: model.class, likeable_id: model.id) }
@@ -38,6 +38,13 @@ shared_examples_for 'likeable' do
       arr = described_class.top(filter: { created_at: 2.days.ago.all_day }).to_a
       expect(arr.count).to eq(2)
       expect(arr.pluck(:created_at).map(&:to_date).uniq).to eq([2.days.ago.to_date])
+    end
+
+    it 'includes objects with zero likes if they fall within the limit' do
+      3.times { create(:like, likeable_type: model.class, likeable_id: model.id) }
+      2.times { create(:like, likeable_type: model1.class, likeable_id: model1.id) }
+      actual = described_class.top(limit: 3)
+      expect(actual.map(&:likes_count)).to eq([3, 2, 0])
     end
   end
 
