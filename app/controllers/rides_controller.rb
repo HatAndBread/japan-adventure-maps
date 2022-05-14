@@ -97,7 +97,9 @@ class RidesController < ApplicationController
       :max_elevation,
       :elevation_gain,
       :elevation_change,
-      :is_event
+      :is_private,
+      :start_location_en,
+      :start_location_jp
     )
   end
 

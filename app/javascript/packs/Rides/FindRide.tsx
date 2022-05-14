@@ -4,21 +4,22 @@ import { LngLat, Map } from "mapbox-gl";
 import { useAppContext } from "../Context";
 import { Ride } from "../Types/Models";
 import Modal from "../Components/Modal/Modal";
-import { DateTime } from "luxon";
-import placeHolderImage from "../../../assets/images/map.png";
 import { useMapSize } from "../Hooks/useMapSize";
 import { MapLayerMouseEvent } from "mapbox-gl";
 import hike from "../../../assets/images/hike.png";
 import bike from "../../../assets/images/ride.png";
 import {slideshow} from '../../lib/slideshow';
+import LikesCount from '../Components/LikesCount';
 
 const FindRide = () => {
   const map = window.mapboxMap as Map;
 
-  const { allRides, controllerData, mapReady } = useAppContext();
+  const { allRides, mapReady } = useAppContext();
   const [rides, setRides] = useState<Ride[]>([]);
   const [hikes, setHikes] = useState<Ride[]>([]);
   const [rideModalContent, setRideModalContent] = useState<null | Ride>(null);
+  const [showCycling, setShowCycling] = useState(true);
+  const [showHiking, setShowHiking] = useState(true);
   const mouseEnter = useRef(() => {
     map.getCanvas().style.cursor = "pointer";
   });
@@ -31,10 +32,10 @@ const FindRide = () => {
     slideshow();
   });
   const iconsLoaded = useRef(0);
-  useMapSize({ height: "100vh" });
+  useMapSize({ height: "calc(100vh - 40px)" });
   useEffect(() => {
-    setRides(allRides.filter((r) => r.rideType === "cycling"));
-    setHikes(allRides.filter((r) => r.rideType === "hiking"));
+    setRides(allRides.filter((r) => r.rideType === "cycling").sort((a, b) => b.likesCount - a.likesCount));
+    setHikes(allRides.filter((r) => r.rideType === "hiking").sort((a, b) => b.likesCount - a.likesCount ));
   }, [allRides]);
 
   const parseImages = (string: string) => {
@@ -44,6 +45,24 @@ const FindRide = () => {
       return [];
     }
   };
+
+  useEffect(()=>{
+    if (!map.getLayer('all-hikes-layer')) return;
+    if (!showHiking) {
+      map.setLayoutProperty('all-hikes-layer', 'visibility', 'none')
+    }else {
+      map.setLayoutProperty('all-hikes-layer', 'visibility', 'visible')
+    }
+  }, [showHiking])
+
+  useEffect(()=>{
+    if (!map.getLayer('all-rides-layer')) return;
+    if (!showCycling){ 
+      map.setLayoutProperty('all-rides-layer', 'visibility', 'none');
+    } else {
+      map.setLayoutProperty('all-rides-layer', 'visibility', 'visible')
+    }
+  }, [showCycling])
 
   useEffect(() => {
     if (!mapReady) return;
@@ -70,6 +89,8 @@ const FindRide = () => {
                 rideType: r.rideType,
                 featuredImages: r.featuredImages,
                 distance: r.distance,
+                startLocationJp: r.startLocationJp,
+                startLocationEn: r.startLocationEn,
               },
               geometry: {
                 type: "Point",
@@ -138,10 +159,48 @@ const FindRide = () => {
 
   return (
     <div className="FindRide">
+      <div className="ride-filter">
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <label htmlFor="cycling-checkbox">Show Cycling Routes</label>
+          <input
+            type="checkbox"
+            id="cycling-checkbox"
+            checked={showCycling}
+            onChange={() => setShowCycling(!showCycling)}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <label htmlFor="cycling-checkbox">Show Hiking Routes</label>
+          <input
+            type="checkbox"
+            id="hiking-checkbox"
+            checked={showHiking}
+            onChange={() => setShowHiking(!showHiking)}
+          />
+        </div>
+      </div>
       {rideModalContent && (
         <Modal onClose={() => setRideModalContent(null)}>
           <div className="find-ride-modal">
-            <h1>{rideModalContent.title}</h1>
+              <LikesCount likesCount={rideModalContent.likesCount} />
+            <h1>
+              {rideModalContent.title}
+            </h1>
+            <h4>
+              A {rideModalContent.rideType} route in {rideModalContent.startLocationEn || 'a secret location'}
+            </h4>
             <p style={{ marginBottom: "8px" }}>
               {rideModalContent.description}
             </p>
@@ -200,7 +259,7 @@ const FindRide = () => {
                 </li>
               </ul>
             </div>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <div
                 className="slideshow"
                 data-urls={rideModalContent.featuredImages}

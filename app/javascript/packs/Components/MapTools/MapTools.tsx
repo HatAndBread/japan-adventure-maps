@@ -3,7 +3,6 @@ import { useRideContext } from '../../Rides/Ride';
 import { Map } from 'mapbox-gl';
 import { useAppContext } from '../../Context';
 import { Route, drawRoute, routeDistance, maxElevation, elevationChangeCalculation } from '../../../lib/map-logic';
-import {getElevationGain} from '../../../lib/geojson-elevation.js'
 import {flash} from '../../../lib/flash';
 import axios from '../../../lib/axios';
 import { last } from 'lodash';
@@ -11,6 +10,7 @@ import toolbox from '../../../../assets/images/toolbox.svg';
 import Exporter from '../../../lib/Exporter';
 import Modal from '../Modal/Modal';
 import LikeButton from '../LikeButton';
+import LikesCount from '../LikesCount';
 
 const MapTools = ({
   setPreviousTool,
@@ -21,7 +21,6 @@ const MapTools = ({
   undoHistory: Route[];
   routeHistory: Route[];
 }) => {
-  const map = window.mapboxMap as Map;
   const ctx = useAppContext();
   const likesUserIds = useMemo(()=> ctx.controllerData?.likes?.map((like)=> like.userId), [])
   const userId = ctx.controllerData?.currentUser?.id;
@@ -45,7 +44,6 @@ const MapTools = ({
     setTool,
     setPopups,
     isEditor,
-    setLoaderText,
   } = useRideContext();
   const [showLike, setShowLike] = useState(userId && !isEditor && creatorId !== userId && !likesUserIds.includes(userId));
   const [likesCount, setLikesCount] = useState(likesUserIds?.length || 0)
@@ -183,14 +181,7 @@ const MapTools = ({
           <i className="fas fa-times pointer"></i>
         </div>
         {!isEditor && (
-          <div style={{ color: "darkred" }}>
-            <i className="fa fa-heart"></i>
-            <span
-              style={{ position: "relative", top: "-4px", fontSize: "11px" }}
-            >
-              {likesCount}
-            </span>
-          </div>
+          <LikesCount likesCount={likesCount}/>
         )}
         <div style={{ color: "rgba(180,120,120, 0.9)" }}>Dirt Road: ----</div>
         <div style={{ color: "rgba(180,40,250, 0.6)" }}>Bike Path: ----</div>

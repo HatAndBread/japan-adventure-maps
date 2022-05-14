@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_02_004042) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_14_031522) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,6 +106,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_02_004042) do
     t.integer "elevation_change"
     t.boolean "is_private", default: false
     t.boolean "is_event", default: false
+    t.string "start_location_en"
+    t.string "start_location_jp"
     t.index ["user_id"], name: "index_rides_on_user_id"
   end
 

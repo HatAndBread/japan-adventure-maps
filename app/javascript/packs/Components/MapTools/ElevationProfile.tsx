@@ -167,7 +167,7 @@ const ElevationProfile = ({ route, hoveringPoint }: { route: Route; hoveringPoin
       </div>
       <div
         className='ElevationProfile'
-        style={{ height: '20vh', width: '100vw', resize: 'vertical', overflow: 'hidden' }}>
+        style={{ height: '14vh', width: '100vw', resize: 'vertical', overflow: 'hidden' }}>
         <canvas id='elevation-chart' ref={chartRef}></canvas>
       </div>
     </div>

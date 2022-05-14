@@ -21,6 +21,8 @@ export type Ride = {
   isEvent: boolean;
   likesCount?: number;
   featuredImages: string;
+  startLocationEn: string;
+  startLocationJp: string;
 };
 
 export type RideContextProps = {
@@ -61,6 +63,8 @@ export type RideContextProps = {
   setDistance: React.Dispatch<React.SetStateAction<number>>;
   setElevationChange: React.Dispatch<React.SetStateAction<number>>;
   setLoaderText: React.Dispatch<React.SetStateAction<string>>;
+  startLocationEn: string;
+  startLocationJp: string;
 };
 
 export type Weather = {

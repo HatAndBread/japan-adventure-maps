@@ -8,7 +8,6 @@ import { useRideContext } from '../../Rides/Ride';
 import {
   getRouteBoundingBox,
   routeDistance,
-  elevationGain,
   maxElevation,
   elevationChangeCalculation,
 } from '../../../lib/map-logic';
@@ -24,13 +23,13 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   const controller = ctx.controllerData?.controllerAction;
   const [isNew, setIsNew] = useState(controller === 'rides#new');
   const [saveEditAsNew, setSaveEditAsNew] = useState(false);
-  const { route, description, setDescription, startTime, setStartTime, title, setTitle, popups } = rideCtx;
+  const { route, description, setDescription, startTime, setStartTime, title, setTitle, popups, startLocationEn, startLocationJp } = rideCtx;
   const [loading, setLoading] = useState(false);
   const [rideId, setRideId] = useState<number>(ctx.controllerData?.ride?.id);
   const [status, setStatus] = useState<'neutral' | 'error' | 'success'>('neutral');
   const [imageURL, setImageURL] = useState<string>();
   const [rideType, setRideType] = useState(ctx?.controllerData?.ride?.rideType || 'hiking');
-  const [isEvent, setIsEvent] = useState(ctx.controllerData?.ride?.isEvent ? true : false);
+  const [isPrivate, setIsPrivate] = useState(ctx?.controllerData?.ride?.isPrivate);
   const saveButtonRef = useRef<HTMLButtonElement>();
 
   useEffect(() => {
@@ -55,9 +54,6 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   const formSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!title) return alert('Please give your route a name.');
-    if (isEvent && !description) return alert('You must add a description to create an event.');
-    if (isEvent && !rideType) return alert('You must select a ride type to create an event.');
-    if (isEvent && !startTime) return alert('You must add a start time to create an event.');
     const bodyObject = {
       description,
       user_id,
@@ -71,8 +67,10 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
       elevation_gain: getElevationGain(route),
       max_elevation: maxElevation(route),
       elevation_change: Math.floor(elevationChangeCalculation(route)),
-      is_event: isEvent,
       ride_type: rideType,
+      is_private: isPrivate,
+      start_location_en: startLocationEn,
+      start_location_jp: startLocationJp,
     };
     //@ts-ignore
     if (imageURL) bodyObject.map_image_url = imageURL;
@@ -115,86 +113,75 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   }, [isNew, saveEditAsNew]);
   return (
     <Modal onClose={() => setShowForm(false)}>
-      <div className='MapForm'>
+      <div className="MapForm">
         {loading && <MyLoader />}
-        {status === 'neutral' && (
-          <Form action='/ride' method='POST' onSubmit={formSubmit}>
+        {status === "neutral" && (
+          <Form action="/ride" method="POST" onSubmit={formSubmit}>
             <input
-              type='text'
-              name='title'
-              id='title'
-              title='Route name'
-              placeholder={isEvent ? `Your event's name` : `Your route's name`}
+              type="text"
+              name="title"
+              id="title"
+              title="Route name"
+              placeholder={`Your route's name`}
               defaultValue={title}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
             />
             <textarea
-              name='description'
-              id='ride-description'
+              name="description"
+              id="ride-description"
               cols={32}
               rows={10}
               defaultValue={description}
-              placeholder={
-                isEvent
-                  ? 'Please enter a detailed description of this event. What can participants expect? What should they know before they join?'
-                  : 'Describe your route'
-              }
-              onChange={(e) => setDescription(e.target.value)}></textarea>
-            <label htmlFor='ride-type-select'>
-              Ride type{' '}
+              placeholder="Describe your route"
+              onChange={(e) => setDescription(e.target.value)}
+            ></textarea>
+            <label htmlFor="ride-type-select">
+              Ride type{" "}
               <select
-                id='ride-type-selct'
+                id="ride-type-selct"
                 defaultValue={rideType}
                 onChange={(e) => setRideType(e.target.value)}
-                title='Select ride type'>
-                <option value='hiking'>Hiking</option>
-                <option value='cycling'>Cycling</option>
+                title="Select ride type"
+              >
+                <option value="hiking">Hiking</option>
+                <option value="cycling">Cycling</option>
               </select>
             </label>
-            {isEvent && (
-              <label
-                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                {' '}
-                Set a date and time for your event
-                <br />
-                <input
-                  type='datetime-local'
-                  name='ride-time'
-                  id='ride-time'
-                  min={new Date().toISOString().slice(0, 16)}
-                  onChange={(e) => setStartTime(e.target.value)}
-                />
-              </label>
-            )}
+            <label htmlFor="private-radio">
+              Share this route with others
+              <input
+                type="checkbox"
+                id="private-radio"
+                defaultChecked={!isPrivate}
+                onClick={() => {
+                  setIsPrivate(!isPrivate);
+                }}
+              />
+            </label>
             <button
-              className='save-form-button'
-              onClick={(e) => {
-                e.preventDefault();
-                if (isEvent) return setIsEvent(false);
-                setIsEvent(true);
-              }}>
-              {isEvent ? 'Make Ride Private' : 'Make A Public Event'}
-            </button>
-            <button className='save-form-button' type='submit' ref={saveButtonRef}>
+              className="save-form-button"
+              type="submit"
+              ref={saveButtonRef}
+            >
               Save
             </button>
             {!isNew && (
-              <button className='save-form-button' onClick={saveAsNew}>
+              <button className="save-form-button" onClick={saveAsNew}>
                 Save as new
               </button>
             )}
           </Form>
         )}
-        {status === 'success' && (
-          <div className='success-screen'>
+        {status === "success" && (
+          <div className="success-screen">
             <p>Your route has successfully been saved.</p>
             <button onClick={editRoute}>Continue editing</button>
             <button onClick={viewRoute}>View route</button>
           </div>
         )}
-        {status === 'error' && <div>Something went wrong.</div>}
+        {status === "error" && <div>Something went wrong.</div>}
       </div>
     </Modal>
   );

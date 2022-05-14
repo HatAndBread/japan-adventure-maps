@@ -40,6 +40,8 @@ declare module 'window' {
       baseMapURL: string;
       currentCursor: string;
       mapFinishedLoading: boolean;
+      rideLng: number;
+      rideLat: number;
     }
   }
 }

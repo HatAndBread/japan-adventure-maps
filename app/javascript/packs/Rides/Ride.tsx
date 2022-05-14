@@ -20,6 +20,7 @@ import MapForm from '../Components/Map/MapForm';
 import Modal from '../Components/Modal/Modal';
 import MapPopUpEditor from '../Components/MapTools/MapPopUpEditor';
 import Loader from '../Components/Loader';
+import axios from '../../lib/axios';
 import { useStateRef } from '../Hooks/useStateRef';
 import { UseControlPoints } from '../Hooks/useControlPoints';
 import { UsePopups } from '../Hooks/usePopups';
@@ -78,6 +79,8 @@ const Ride = () => {
   const [weather, setWeather] = useState<Weather>([]);
   const [mountain, setMountain] = useState<Mountain>();
   const [pathModalData, setPathModalData] = useState<PathModalData>();
+  const [startLocationEn, setStartLocationEn] = useState();
+  const [startLocationJp, setStartLocationJp] = useState();
 
   const [isMobile, setIsMobile] = useState(window.innerWidth > 1000 ? false : true);
   const [elevationDistanceDisplay, setElevationDistanceDisplay] = useState<null | {
@@ -98,10 +101,6 @@ const Ride = () => {
     });
     addMarker(moveStartMarker(lngLat));
   };
-
-  useEffect(() => {
-    console.log(weather);
-  }, [weather]);
 
   const contextValues = {
     route,
@@ -134,10 +133,12 @@ const Ride = () => {
     setDistance,
     setElevationChange,
     setLoaderText,
+    startLocationEn,
+    startLocationJp
   };
 
   useRouteUpdate(route, setDistance, setElevationChange, routeHistory);
-  useMapSize({ height: 'calc(80vh - 64px)' });
+  useMapSize({ height: 'calc(86vh - 64px)' });
   useLayers(tool, setMountain, setLoaderText, setPathModalData);
 
   useEffect(() => {
@@ -153,6 +154,24 @@ const Ride = () => {
 
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  useEffect(() => {
+    if (route?.length && isEditor && typeof route[0]?.lng === 'number') {
+      if (route[0].lng === window.rideLng && route[0].lat === window.rideLat) return;
+
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${Math.round(route[0].lng * 10000) / 10000},${Math.round(route[0].lat * 10000) / 10000}.json?language=en,ja&access_token=${process.env.MAPBOX_KEY}`;
+      const getLocation = async () => {
+        const res = await axios.get(url);
+        const regionData = res.data?.features?.filter((f)=> f.place_type[0] === 'region')?.[0]
+        const {text_en, text_ja} = regionData;
+        setStartLocationEn(text_en)
+        setStartLocationJp(text_ja)
+        window.rideLng = route[0].lng
+        window.rideLat = route[0].lat
+      };
+      getLocation();
+    }
+  }, [route]);
 
   useEffect(() => {
     const setCursor = (type: string) => {
