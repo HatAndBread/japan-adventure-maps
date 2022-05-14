@@ -809,6 +809,10 @@
 .featured-route .featured-route-content p {
   margin: 16px;
 }
+.featured-route .three-d-link {
+  position: absolute;
+  left: 16px;
+}
 .featured-route .route-stats {
   display: flex;
   list-style: none;

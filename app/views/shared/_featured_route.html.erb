@@ -3,6 +3,7 @@
     <i class="fas fa-heart"></i>
     <span class="likes-count"> <%= route.likes_count %> </span>
   </div>
+  <a class="three-d-link" href="/rides/<%=route.id%>/three_d">View in 3D <i class="fas fa-cube big-icon"></i></a>
   <%= link_to ride_path(route) do %>
     <h1>
       <% if route.ride_type == 'cycling' %>
