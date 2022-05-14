@@ -16,10 +16,11 @@ const App = ({ controllerData }: { controllerData: any }) => {
   const [mapReady, setMapReady] = useState(!!window.mapFinishedLoading);
   useEffect(()=> {
     const map = window.mapboxMap as Map;
-    map.on('styledata', () => {
-      if (!mapReady) setMapReady(true);
-      window.mapFinishedLoading = true;
-    });
+    if (!window.mapFinishedLoading) {
+      map.once('styledata', () => {
+        setMapReady(true);
+      })
+    }
     const getAllRides = async () => {
       const allRidesData = await axios.get('/all_rides');
       const rides = allRidesData.data.data.map((d)=> d.attributes) as RideType[];

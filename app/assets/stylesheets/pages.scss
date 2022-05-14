@@ -12,18 +12,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  .hero-navigation-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
 }
 .how-it-works {
-  width: 100vw;
+  max-width: 1400px;
+  width: 84vw;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   .basic-card {
+    margin-left: 0;
+    margin-right: 0;
     h2 {
       text-decoration: underline;
     }
@@ -40,11 +37,16 @@
   box-shadow: 2px 2px 2px 2px rgba(50, 50, 50, 0.5);
 }
 
+.featured-routes-container {
+  width: 100vw;
+}
 .featured-route {
-  max-width: 1000px;
-  width: 90vw !important;
+  width: 84% !important;
+  max-width: 1400px !important;
+  flex-grow: 1;
   margin-bottom: 32px !important;
   position: relative;
+  box-sizing: border-box;
   .likes-count {
     position: relative;
     font-size: 11px;
