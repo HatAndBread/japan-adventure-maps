@@ -13,6 +13,8 @@ const directions = async (
   directionsType: string,
   draggingControlPoint: React.MutableRefObject<boolean>
 ) => {
+  e.originalEvent.stopPropagation();
+  e.preventDefault();
   if (window.mapboxMap.getLayer('preview') && window.mapboxMap.getSource('preview')) {
     window.mapboxMap.removeLayer('preview');
     window.mapboxMap.removeSource('preview');
@@ -51,6 +53,7 @@ const directions = async (
 
 const goToGoogleMaps = (e: MapLayerMouseEvent) => {
   // @ TODO Figure out which direction should be facing and add to cbp if click on control point
+  e.originalEvent.stopPropagation();
   const url = `http://google.com/maps?q=&layer=c&cbll=${e.lngLat.lat},${e.lngLat.lng}&cbp=12,0,0,0,0`;
   if (window.isProbablyDesktop) {
     const win = window.open(
@@ -75,6 +78,7 @@ const searchFlickr = async (
   setFlickrPhotos: React.Dispatch<React.SetStateAction<string[]>>,
   setLoaderText: React.Dispatch<React.SetStateAction<string>>
 ) => {
+  e.originalEvent.stopPropagation();
   const { lng, lat } = e.lngLat;
   const url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${process.env.FLICKR_KEY}&lat=${lat}&lon=${lng}&format=json&nojsoncallback=1&geo_context=2&radius=0.5&content_type=1&accuracy=16&sort=relevance`;
   setLoaderText('Searching for photographs in this area...');
@@ -91,6 +95,7 @@ const getInfo = async (
   setLoaderText: React.Dispatch<React.SetStateAction<string>>,
   setWikiData: React.Dispatch<React.SetStateAction<[string, string][]>>
 ) => {
+  e.originalEvent.stopPropagation();
   setLoaderText('Searching for information about this area...');
   try {
     let url = 'https://en.wikipedia.org/w/api.php?origin=*';
@@ -135,6 +140,7 @@ const getWeather = async (
     >
   >
 ) => {
+  e.originalEvent.stopPropagation();
   setLoaderText('Getting weather forecast for this area...');
   const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${e.lngLat.lat}&lon=${e.lngLat.lng}&units=metric&appid=${process.env.WEATHER_KEY}`;
   const res = await axios.get(url);

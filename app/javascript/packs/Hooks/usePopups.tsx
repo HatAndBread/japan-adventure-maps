@@ -9,6 +9,9 @@ export const UsePopups = () => {
   const { popups, setPopups, popupsRef, setPopupPos, toolRef, isEditor } = useRideContext();
   const hoveringOverPopupMarkerRef = useRef(false);
   const onMarkerClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(e.stopPropagation);
     const path = e.path || (e.composedPath && e.composedPath());
     const el = path.find((i: HTMLElement) => i?.dataset?.lngLat) as HTMLElement;
     if (!el?.dataset?.lngLat) return;
