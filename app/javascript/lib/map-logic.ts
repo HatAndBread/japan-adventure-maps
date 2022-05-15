@@ -359,7 +359,9 @@ export class MapEventListenerAdder {
 
   removeAll() {
     const map = getMap();
-    this.eventListenerFunctions.forEach((listener) => map.off(listener.type, listener.listener));
+    this.eventListenerFunctions.forEach((listener) =>
+      map.off(listener.type, listener.listener)
+    );
     this.eventListenerFunctionsWithLayer.forEach((listener) =>
       map.off(listener.type, listener.layerName, listener.listener)
     );
@@ -374,7 +376,8 @@ export class MapEventListenerAdder {
   }
 
   onWithLayer(listener: Listener) {
-    if (!listener.layerName) return console.error('You must add a layerName with onWithLayer');
+    if (!listener.layerName)
+      return console.error("You must add a layerName with onWithLayer");
     const map = getMap();
     this.eventListenerFunctionsWithLayer.push(listener);
     map.on(listener.type, listener.layerName, listener.listener);

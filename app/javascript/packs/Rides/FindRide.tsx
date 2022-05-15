@@ -10,9 +10,11 @@ import hike from "../../../assets/images/hike.png";
 import bike from "../../../assets/images/ride.png";
 import {slideshow} from '../../lib/slideshow';
 import LikesCount from '../Components/LikesCount';
+import { MapEventListenerAdder } from "../../lib/map-logic";
 
 const FindRide = () => {
   const map = window.mapboxMap as Map;
+  const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
 
   const { allRides, mapReady } = useAppContext();
   const [rides, setRides] = useState<Ride[]>([]);
@@ -114,9 +116,9 @@ const FindRide = () => {
             "icon-allow-overlap": false,
           },
         });
-        map.on("mouseenter", `all-${type}-layer`, mouseEnter.current);
-        map.on("mouseleave", `all-${type}-layer`, mouseLeave.current);
-        map.on("click", `all-${type}-layer`, onRideClick.current);
+        mapEventListenerAdder.onWithLayer({type: "mouseenter", layerName: `all-${type}-layer`, listener: mouseEnter.current});
+        mapEventListenerAdder.onWithLayer({type: "mouseleave", layerName: `all-${type}-layer`, listener: mouseLeave.current});
+        mapEventListenerAdder.onWithLayer({type: "click", layerName: `all-${type}-layer`, listener: onRideClick.current});
       });
     };
     if (map.hasImage(hike) && map.hasImage(bike)) {
@@ -143,12 +145,12 @@ const FindRide = () => {
           map.removeSource(source);
         }
       });
-      map.off("mouseenter", `all-hikes-layer`, mouseEnter.current);
-      map.off("mouseleave", `all-hikes-layer`, mouseLeave.current);
-      map.off("click", `all-hikes-layer`, onRideClick.current);
-      map.off("mouseenter", `all-rides-layer`, mouseEnter.current);
-      map.off("mouseleave", `all-rides-layer`, mouseLeave.current);
-      map.off("click", `all-rides-layer`, onRideClick.current);
+      mapEventListenerAdder.off({type: "mouseenter", layerName: `all-hikes-layer`, listener: mouseEnter.current});
+      mapEventListenerAdder.off({type: "mouseleave", layerName: `all-hikes-layer`, listener: mouseLeave.current});
+      mapEventListenerAdder.off({type: "click", layerName: `all-hikes-layer`, listener: onRideClick.current});
+      mapEventListenerAdder.off({type: "mouseenter", layerName: `all-rides-layer`, listener: mouseEnter.current});
+      mapEventListenerAdder.off({type: "mouseleave", layerName: `all-rides-layer`,listener: mouseLeave.current});
+      mapEventListenerAdder.off({type: "click", layerName: `all-rides-layer`, listener: onRideClick.current});
       document.removeEventListener("turbo:before-fetch-request", l);
       window.removeEventListener("popstate", l);
     };

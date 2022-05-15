@@ -3,6 +3,7 @@ import { Map, MapLayerMouseEvent, MapMouseEvent, Popup, LngLat } from "mapbox-gl
 import { getElevation } from "../../lib/map-logic";
 import { Mountain, PathModalData } from "../Types/Models";
 import { renderToString } from "react-dom/server";
+import { MapEventListenerAdder } from '../../lib/map-logic';
 
 const useLayers = (
   tool: string,
@@ -356,10 +357,6 @@ const useLayers = (
       if (!overlaps.length)
         map.getCanvas().style.cursor = window.currentCursor || "initial";
     };
-    customLayers.forEach((layer) => {
-      map.on("mouseenter", layer, mouseEnter);
-      map.on("mouseleave", layer, mouseLeave);
-    });
     const theClickFunction = (e: MapMouseEvent) => {
       if (tool !== "no-tools") return;
       const features = map.queryRenderedFeatures(e.point);
@@ -370,14 +367,19 @@ const useLayers = (
       e.preventDefault();
       e.originalEvent.stopPropagation();
     };
-    map.on("click", theClickFunction);
+    const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
+    mapEventListenerAdder.on({type: 'click', listener: theClickFunction}) 
+    customLayers.forEach((layer) => {
+      mapEventListenerAdder.onWithLayer({type: 'mouseenter', layerName: layer, listener: mouseEnter})
+      mapEventListenerAdder.onWithLayer({type: 'mouseleave', layerName: layer, listener: mouseLeave})
+    });
 
     return () => {
       customLayers.forEach((layer: string) => {
-        map.off("mouseenter", layer, mouseEnter);
-        map.off("mouseleave", layer, mouseLeave);
+        mapEventListenerAdder.off({type: "mouseenter", layerName: layer, listener: mouseEnter });
+        mapEventListenerAdder.off({type: "mouseleave", layerName: layer, listener: mouseLeave });
       });
-      map.off("click", theClickFunction);
+      mapEventListenerAdder.off({type: "click", listener: theClickFunction});
     };
   }, [tool]);
 };
