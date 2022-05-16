@@ -27,14 +27,12 @@ const MapPopUpEditor = ({
   const alreadyCreatedPopup = popups?.find((p) => sameLngLat(p));
   const startStateDelta = alreadyCreatedPopup?.delta;
   const [markerColor, setMarkerColor] = useState(alreadyCreatedPopup ? alreadyCreatedPopup.markerColor : 'rgb(0,0,0)');
-  const [htmlContent, setHtmlContent] = useState(startStateDelta ? startStateDelta : '');
   const [delta, setDelta] = useState(startStateDelta ? startStateDelta : '');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const addToPopups = () => {
     const popup = {
       markerColor,
       lngLat: popupPos,
-      htmlContent,
       delta
     };
     const newPopups = [...popups];

@@ -156,24 +156,6 @@ const useLayers = (
           )
           .addTo(map);
       },
-      toilets: (props: { [name: string]: any}, lngLat: LngLat) => {
-        console.log(props);
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>{props.name}</h1>
-                {props.website && (
-                  <a href={props.website} target="_blank">
-                    Website
-                  </a>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
-      },
       beds: (props: { [name: string]: any}, lngLat: LngLat) => {
         const getType = (str: string) => {
           if (str === "hotel") return "Hotel";
@@ -198,12 +180,6 @@ const useLayers = (
             )
           )
           .addTo(map);
-      },
-      "transit-label": (props: { [name: string]: any}, lngLat: LngLat) => {
-        console.log(props);
-      },
-      paths: (props: { [name: string]: any}, lngLat: LngLat) => {
-        setPathModalData(props as PathModalData);
       },
       waterfalls: async (props: { [name: string]: any}, lngLat: LngLat) => {
         const wikipediaUrl =
