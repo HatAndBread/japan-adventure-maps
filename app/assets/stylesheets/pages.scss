@@ -87,6 +87,12 @@
     flex-direction: column;
     align-items: center;
   }
+  .how-it-works {
+    justify-content: center;
+    .basic-card {
+      width: 90%;
+    }
+  }
 }
 
 .spacer {
@@ -114,5 +120,14 @@ footer {
   .how-it-works {
     flex-direction: column;
     align-items: center;
+  }
+  .featured-route {
+    .route-stats {
+      flex-direction: column;
+    }
+    h1 {
+      margin-top: 40px;
+      font-size: 22px;
+    }
   }
 }

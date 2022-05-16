@@ -32,14 +32,16 @@ import useLayers from '../Hooks/useLayers';
 import { UseMapListenerInitialization } from '../Hooks/useMapListenerInitialization';
 import { UseFixMissingElevations } from '../Hooks/useFixMissingElevations';
 import ElevationDistanceDisplayer from '../Components/Map/ElevationDistanceDisplayer';
-import { RideContextProps, Weather, Mountain, PathModalData } from '../Types/Models';
+import { RideContextProps, Weather, Mountain, Cave, PathModalData } from '../Types/Models';
 import { openFile } from '../../lib/FileOpener';
 import { importer } from '../../lib/importer';
 import FlickrModal from '../Components/Modal/FlickrModal';
 import WikiModal from '../Components/Modal/WikiModal';
 import WeatherModal from '../Components/Modal/WeatherModal';
 import MountainModal from '../Components/Modal/MountainModal';
+import CaveModal from '../Components/Modal/CaveModal';
 import PathModal from '../Components/Modal/PathModal';
+import PopupModal from '../Components/Modal/PopupModal';
 
 export const RideContext = createContext<Partial<RideContextProps>>({});
 export const useRideContext = () => useContext(RideContext);
@@ -78,7 +80,9 @@ const Ride = () => {
   const [wikiData, setWikiData] = useState<[string, string][]>([]);
   const [weather, setWeather] = useState<Weather>([]);
   const [mountain, setMountain] = useState<Mountain>();
+  const [cave, setCave] = useState<Cave>();
   const [pathModalData, setPathModalData] = useState<PathModalData>();
+  const [popupModalData, setPopupModalData] = useState<string>();
   const [startLocationEn, setStartLocationEn] = useState();
   const [startLocationJp, setStartLocationJp] = useState();
 
@@ -139,7 +143,7 @@ const Ride = () => {
 
   useRouteUpdate(route, setDistance, setElevationChange, routeHistory);
   useMapSize({ height: 'calc(86vh - 64px)' });
-  useLayers(tool, setMountain, setLoaderText, setPathModalData);
+  useLayers(tool, setMountain, setCave, setLoaderText, setPathModalData);
 
   useEffect(() => {
     if (ctx.controllerData.controllerAction !== 'rides#show') return;
@@ -218,7 +222,9 @@ const Ride = () => {
   }, [tool]);
   return (
     <RideContext.Provider value={contextValues}>
-      {loaderText && <Loader loaderText={loaderText} setLoaderText={setLoaderText} />}
+      {loaderText && (
+        <Loader loaderText={loaderText} setLoaderText={setLoaderText} />
+      )}
       <UseMapInitialization />
       <UseMapListenerInitialization />
       {isEditor && (
@@ -228,12 +234,17 @@ const Ride = () => {
         </>
       )}
 
-      <UsePopups />
+      <UsePopups setPopupModalData={setPopupModalData} />
       {isEditor && <UseFixMissingElevations />}
-      <div className='RideNew'>
-        {popupPos && (
+      <div className="RideNew">
+        {popupPos && !popupModalData && isEditor && (
           <Modal onClose={() => setPopupPos(null)}>
-            <MapPopUpEditor popupPos={popupPos} setPopupPos={setPopupPos} popups={popups} setPopups={setPopups} />
+            <MapPopUpEditor
+              popupPos={popupPos}
+              setPopupPos={setPopupPos}
+              popups={popups}
+              setPopups={setPopups}
+            />
           </Modal>
         )}
         {flickrPhotos.length ? (
@@ -264,6 +275,13 @@ const Ride = () => {
         ) : (
           <></>
         )}
+        {cave ? (
+          <Modal onClose={() => setCave(undefined)}>
+            <CaveModal cave={cave} />
+          </Modal>
+        ) : (
+          <></>
+        )}
         {pathModalData ? (
           <Modal onClose={() => setPathModalData(undefined)}>
             <PathModal path={pathModalData} />
@@ -271,23 +289,46 @@ const Ride = () => {
         ) : (
           <></>
         )}
+        {popupModalData && popupPos ? (
+          <Modal
+            onClose={() => {
+              setPopupPos(undefined);
+              setPopupModalData(undefined);
+            }}
+          >
+            <PopupModal
+              setPopupModalData={setPopupModalData}
+              popupData={popupModalData}
+              isEditor={isEditor}
+              setPopupPos={setPopupPos}
+              popupPos={popupPos}
+            />
+          </Modal>
+        ) : (
+          <></>
+        )}
         {isEditor && showRideWithModal && (
           <Modal onClose={() => setShowRideWithModal(false)}>
-            <div className='standard-modal'>
-              <select onChange={(e) => setImportType(e.target.value)} defaultValue={importType}>
-                <option value='gpx'>Import GPX File</option>
-                <option value='kml'>Import KML File</option>
+            <div className="standard-modal">
+              <select
+                onChange={(e) => setImportType(e.target.value)}
+                defaultValue={importType}
+              >
+                <option value="gpx">Import GPX File</option>
+                <option value="kml">Import KML File</option>
                 {/* <option value='rwgps'>Import from Ride With GPS</option>  DOESNT WORK ANYMORE?? */}
               </select>
-              {(importType === 'gpx' || importType === 'kml') && (
+              {(importType === "gpx" || importType === "kml") && (
                 <button
                   onClick={() => {
-                    console.log(importType);
                     openFile(
                       (fileList) => {
                         fileList[0].text().then((text) => {
                           const route = importer(importType, text);
-                          if (!route) return alert('There was an error importing your file.');
+                          if (!route)
+                            return alert(
+                              "There was an error importing your file."
+                            );
                           setRouteFromScratch(route);
                           setShowRideWithModal(false);
                         });
@@ -295,7 +336,8 @@ const Ride = () => {
                       false,
                       `.${importType}`
                     );
-                  }}>
+                  }}
+                >
                   Choose File
                 </button>
               )}
@@ -303,15 +345,27 @@ const Ride = () => {
           </Modal>
         )}
         {showForm && <MapForm setShowForm={setShowForm} />}
-        <MapTools setPreviousTool={setPreviousTool} undoHistory={undoHistory} routeHistory={routeHistory} />
+        <MapTools
+          setPreviousTool={setPreviousTool}
+          undoHistory={undoHistory}
+          routeHistory={routeHistory}
+        />
         {elevationDistanceDisplay && !window.isTouchScreen && (
           <ElevationDistanceDisplayer data={elevationDistanceDisplay} />
         )}
-        <div className='map-show-container' style={{ position: 'relative', display: 'flex', width: '100%' }}>
-          {!isMobile && ctx.controllerData?.ride?.isEvent && ctx.controllerData.controllerAction === 'rides#show' && (
-            <EventShow />
-          )}
-          <div className='map-container' style={{ position: 'relative', width: '100%' }}>
+        <div
+          className="map-show-container"
+          style={{ position: "relative", display: "flex", width: "100%" }}
+        >
+          {!isMobile &&
+            ctx.controllerData?.ride?.isEvent &&
+            ctx.controllerData.controllerAction === "rides#show" && (
+              <EventShow />
+            )}
+          <div
+            className="map-container"
+            style={{ position: "relative", width: "100%" }}
+          >
             <MapboxMap
               tool={tool}
               onClick={getClickFunc(
@@ -326,32 +380,40 @@ const Ride = () => {
                 setWeather
               )}
             />
-            <div className='map-top-tools'>
+            <div className="map-top-tools">
               {window.isProbablyDesktop && <Controls3D map={map} />}
               <div>
                 <select
-                  title='Select Map Style'
-                  style={{ pointerEvents: 'all' }}
+                  title="Select Map Style"
+                  style={{ pointerEvents: "all" }}
                   onChange={(e) => {
                     map.setStyle(e.target.value);
 
-                    map.once('style.load', () => {
+                    map.once("style.load", () => {
                       addLayersAndSources();
                       if (route?.length) setRoute([...route]);
                     });
-                  }}>
+                  }}
+                >
                   <option value={window.baseMapURL}>Streets</option>
-                  <option value='mapbox://styles/mapbox/satellite-streets-v11'>Satellite Streets</option>
-                  <option value='mapbox://styles/mapbox/satellite-v9'>Satellite</option>
+                  <option value="mapbox://styles/mapbox/satellite-streets-v11">
+                    Satellite Streets
+                  </option>
+                  <option value="mapbox://styles/mapbox/satellite-v9">
+                    Satellite
+                  </option>
                 </select>
               </div>
             </div>
           </div>
         </div>
-        <ElevationProfile route={route} hoveringPoint={elevationDistanceDisplay} />
-        {isMobile && ctx.controllerData?.ride?.isEvent && ctx.controllerData.controllerAction === 'rides#show' && (
-          <EventShow />
-        )}
+        <ElevationProfile
+          route={route}
+          hoveringPoint={elevationDistanceDisplay}
+        />
+        {isMobile &&
+          ctx.controllerData?.ride?.isEvent &&
+          ctx.controllerData.controllerAction === "rides#show" && <EventShow />}
       </div>
     </RideContext.Provider>
   );

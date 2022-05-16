@@ -124,6 +124,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
               title="Route name"
               placeholder={`Your route's name`}
               defaultValue={title}
+              maxLength={40}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
@@ -133,6 +134,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
               id="ride-description"
               cols={32}
               rows={10}
+              maxLength={420}
               defaultValue={description}
               placeholder="Describe your route"
               onChange={(e) => setDescription(e.target.value)}

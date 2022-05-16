@@ -25,15 +25,17 @@ const MapPopUpEditor = ({
   const sameLngLat = (p: { lngLat: { lng: number; lat: number } }) =>
     p.lngLat.lng === popupPos.lng && p.lngLat.lat === popupPos.lat;
   const alreadyCreatedPopup = popups?.find((p) => sameLngLat(p));
-  const startState = alreadyCreatedPopup?.htmlContent;
+  const startStateDelta = alreadyCreatedPopup?.delta;
   const [markerColor, setMarkerColor] = useState(alreadyCreatedPopup ? alreadyCreatedPopup.markerColor : 'rgb(0,0,0)');
-  const [htmlContent, setHtmlContent] = useState(startState ? startState : '');
+  const [htmlContent, setHtmlContent] = useState(startStateDelta ? startStateDelta : '');
+  const [delta, setDelta] = useState(startStateDelta ? startStateDelta : '');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const addToPopups = () => {
     const popup = {
       markerColor,
       lngLat: popupPos,
       htmlContent,
+      delta
     };
     const newPopups = [...popups];
     if (alreadyCreatedPopup) {
@@ -63,7 +65,7 @@ const MapPopUpEditor = ({
           }}
         />
       </div>
-      <QuillEditor setInnerHTML={setHtmlContent} startState={startState} focusOnStart={true} />
+      <QuillEditor setDelta={setDelta} startStateDelta={startStateDelta} focusOnStart={true} />
       <button className='save-button' onClick={addToPopups}>
         {alreadyCreatedPopup ? 'Save POI' : 'Add POI'}
       </button>

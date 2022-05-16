@@ -835,6 +835,13 @@
     flex-direction: column;
     align-items: center;
   }
+
+  .how-it-works {
+    justify-content: center;
+  }
+  .how-it-works .basic-card {
+    width: 90%;
+  }
 }
 .spacer {
   height: 260px;
@@ -862,6 +869,14 @@ footer p {
   .how-it-works {
     flex-direction: column;
     align-items: center;
+  }
+
+  .featured-route .route-stats {
+    flex-direction: column;
+  }
+  .featured-route h1 {
+    margin-top: 40px;
+    font-size: 22px;
   }
 }
 .ProfileShow .profile-top {

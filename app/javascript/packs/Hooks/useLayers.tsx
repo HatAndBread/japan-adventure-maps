@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { Map, MapLayerMouseEvent, MapMouseEvent, Popup, LngLat } from "mapbox-gl";
 import { getElevation } from "../../lib/map-logic";
-import { Mountain, PathModalData } from "../Types/Models";
+import { Mountain, Cave, PathModalData } from "../Types/Models";
 import { renderToString } from "react-dom/server";
 import { MapEventListenerAdder } from '../../lib/map-logic';
 
 const useLayers = (
   tool: string,
   setMountain: React.Dispatch<React.SetStateAction<Mountain>>,
+  setCave: React.Dispatch<React.SetStateAction<Cave>>,
   setLoaderText: React.Dispatch<React.SetStateAction<string>>,
   setPathModalData: React.Dispatch<
     React.SetStateAction<{
@@ -19,10 +20,7 @@ const useLayers = (
     "peaks",
     "huts",
     "camps",
-    "toilets",
     "beds",
-    "transit-label",
-    "paths",
     "tracks",
     "caves",
     "waterfalls",
@@ -283,30 +281,7 @@ const useLayers = (
           }
           setLoaderText("");
         }
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>
-                  {props.name} {props["name-en"] && ` (${props["name-en"]})`}
-                </h1>
-                {thumbnailURL && (
-                  <div>
-                    <img src={thumbnailURL}></img>
-                  </div>
-                )}
-                {wikipediaUrl && (
-                  <div>
-                    <a href={wikipediaUrl} target="_blank">
-                      Wikipedia
-                    </a>
-                  </div>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        setCave({name: props.name, wikiurls: [wikipediaUrl], imageURL: thumbnailURL})
       },
       tracks: async (props: { [name: string]: any}, lngLat: LngLat) => {
 

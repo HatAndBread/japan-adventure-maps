@@ -1,6 +1,6 @@
 import { LngLat } from 'mapbox-gl';
 import { Route } from '../../lib/map-logic';
-export type Popups = { markerColor: string; lngLat: LngLat; htmlContent: string }[];
+export type Popups = { markerColor: string; lngLat: LngLat; delta: string; }[];
 
 export type Ride = {
   created_at: string;
@@ -83,6 +83,14 @@ export type Mountain =
       name: string | undefined;
       elevation: string | number | undefined;
       prominence: string | number | undefined;
+    }
+  | undefined;
+
+export type Cave =
+  | {
+      imageURL: string | undefined;
+      wikiurls: string[] | undefined;
+      name: string | undefined;
     }
   | undefined;
 

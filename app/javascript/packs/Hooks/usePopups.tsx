@@ -3,15 +3,15 @@ import { Map, Marker, Popup as MapboxPopup, LngLat, MapMouseEvent } from 'mapbox
 import { Popups } from '../Types/Models';
 import { useRideContext } from '../Rides/Ride';
 import { MapEventListenerAdder, addMarker } from '../../lib/map-logic';
+import Delta from 'quill-delta';
 
-export const UsePopups = () => {
+export const UsePopups = ({setPopupModalData}: {setPopupModalData: React.Dispatch<React.SetStateAction<string>>}) => {
   const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
   const { popups, setPopups, popupsRef, setPopupPos, toolRef, isEditor } = useRideContext();
   const hoveringOverPopupMarkerRef = useRef(false);
   const onMarkerClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(e.stopPropagation);
     const path = e.path || (e.composedPath && e.composedPath());
     const el = path.find((i: HTMLElement) => i?.dataset?.lngLat) as HTMLElement;
     if (!el?.dataset?.lngLat) return;
@@ -20,49 +20,9 @@ export const UsePopups = () => {
     const popupsCurr = popupsRef.current as Popups;
     const clickedPopup = popupsCurr.find((p) => p.lngLat.lng === lngLat.lng && p.lngLat.lat === lngLat.lat);
     if (!clickedPopup) return;
-    const popup = new MapboxPopup({ closeOnClick: false })
-      .setLngLat(clickedPopup.lngLat)
-      .setHTML(clickedPopup.htmlContent);
-    addMarker(popup);
-    const popupEl = popup.getElement();
-    const popupContent = Array.from(popupEl.children).find((c) => c.classList.contains('mapboxgl-popup-content'));
-    if (!popupContent || !isEditor) return;
-    const createButtons = (className: string) => {
-      const button = document.createElement('a');
-      button.style.marginRight = '8px';
-      const i = document.createElement('i');
-      i.className = className;
-      button.appendChild(i);
-      button.style.cursor = 'pointer';
-      popupContent.insertAdjacentElement('beforeend', button);
-      return button;
-    };
-    const editButton = createButtons('fas fa-edit');
-    const trashButton = createButtons('fas fa-trash');
-    const handleEditClick = (e: MouseEvent) => {
-      popup.remove();
-      setPopupPos(lngLat);
-      editButton.removeEventListener('click', handleEditClick);
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    const handleTrashClick = (e: MouseEvent) => {
-      const confirmation = confirm('Are you sure you want to delete this point of interest?');
-      if (confirmation) {
-        const newPopups = popupsCurr.filter((p) => p.lngLat.lng !== lngLat.lng && p.lngLat.lat !== lngLat.lat);
-        setPopups(newPopups);
-      }
-      trashButton.removeEventListener('click', handleTrashClick);
-      popup.remove();
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    editButton.addEventListener('click', handleEditClick);
-    trashButton.addEventListener('click', handleTrashClick);
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-  };
+    setPopupPos(lngLat);
+    setPopupModalData(clickedPopup.delta || JSON.stringify(new Delta()));
+  }
 
   useEffect(() => {
     const handlePopup = (e: MapMouseEvent) => {

@@ -29,7 +29,6 @@ class RidesController < ApplicationController
 
   def create
     @ride = Ride.new(ride_params)
-    @ride.popups = sanitize_popups(ride_params[:popups])
     if @ride.save!
       save_as_leader
       render json: { success: true, ride_id: @ride.id }.to_json
@@ -120,16 +119,6 @@ class RidesController < ApplicationController
       Participant.create!(user_id: current_user.id, ride_id: @ride.id,
                           is_leader: true)
     end
-  end
-
-  def sanitize_popups(popups)
-    popups = JSON.parse(popups)
-    sanitized_popups = popups.map do |popup|
-      sanitized_string = ActionController::Base.helpers.sanitize(popup['htmlContent'])
-      popup['htmlContent'] = sanitized_string
-      popup
-    end
-    sanitized_popups.to_json
   end
 
   def authorize!
