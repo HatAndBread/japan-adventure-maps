@@ -1,20 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import { Map, MapLayerMouseEvent, MapMouseEvent, Popup, LngLat } from "mapbox-gl";
 import { getElevation } from "../../lib/map-logic";
-import { Mountain, Cave, PathModalData } from "../Types/Models";
-import { renderToString } from "react-dom/server";
+import { Mountain, Cave, Waterfall, Bed, Hut, Camp, PathModalData, TrackModalData } from "../Types/Models";
 import { MapEventListenerAdder } from '../../lib/map-logic';
 
 const useLayers = (
   tool: string,
   setMountain: React.Dispatch<React.SetStateAction<Mountain>>,
   setCave: React.Dispatch<React.SetStateAction<Cave>>,
+  setBed: React.Dispatch<React.SetStateAction<Bed>>,
+  setHut: React.Dispatch<React.SetStateAction<Hut>>,
+  setCamp: React.Dispatch<React.SetStateAction<Camp>>,
+  setWaterfall: React.Dispatch<React.SetStateAction<Waterfall>>,
   setLoaderText: React.Dispatch<React.SetStateAction<string>>,
-  setPathModalData: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-    }>
-  >
+  setPathModalData: React.Dispatch<React.SetStateAction<{name: string}>>,
+  setTrackModalData: React.Dispatch<React.SetStateAction<TrackModalData>>,
 ) => {
   const customLayers = [
     "peaks",
@@ -27,7 +27,6 @@ const useLayers = (
   ];
   const map = window.mapboxMap as Map;
   useEffect(() => {
-    if (tool !== "no-tools") return;
     const clickFuncs = {
       peaks: async (props: { [name: string]: any}, lngLat: LngLat) => {
         const wikiurls = await (async () => {
@@ -120,66 +119,20 @@ const useLayers = (
         });
       },
       huts: (props: { [name: string]: any}, lngLat: LngLat) => {
-        console.log(props);
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>
-                  {props.name} {props["name:en"] && `(${props["name:en"]})`}
-                </h1>
-                {props.website && (
-                  <a href={props.website} target="_blank">
-                    Website
-                  </a>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        setHut({url: props.website, name: props.name, nameEn: props["name:en"]})
       },
       camps: (props: { [name: string]: any}, lngLat: LngLat) => {
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>{props.name}</h1>
-                {props.website && (
-                  <a href={props.website} target="_blank">
-                    Website
-                  </a>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        console.log(props)
+        setCamp({url: props.website, name: props.name})
       },
       beds: (props: { [name: string]: any}, lngLat: LngLat) => {
         const getType = (str: string) => {
-          if (str === "hotel") return "Hotel";
           if (str === "guest_house") return "Guest House";
           if (str === "hostel") return "Hostel";
           if (str === "motel") return "Motel";
           return "Hotel";
         };
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>{props.name}</h1>
-                <p>Type: {getType(props.tourism)}</p>
-                {props.website && (
-                  <a href={props.website} target="_blank">
-                    Website
-                  </a>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        setBed({url: props.website, name: props.name, type: getType(props.tourism)})
       },
       waterfalls: async (props: { [name: string]: any}, lngLat: LngLat) => {
         const wikipediaUrl =
@@ -196,7 +149,6 @@ const useLayers = (
           )}.wikipedia.org/w/api.php?action=query&titles=${props.wikipedia.slice(
             3
           )}&prop=pageimages&format=json&pithumbsize=300&origin=*`;
-        console.log(props);
         if (thumbnailURL) {
           const res = await fetch(thumbnailURL);
           const data = await res.json();
@@ -206,30 +158,7 @@ const useLayers = (
                 ?.source;
           }
         }
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>
-                  {props.name} {props["name-en"] && ` (${props["name-en"]})`}
-                </h1>
-                {thumbnailURL && (
-                  <div>
-                    <img src={thumbnailURL}></img>
-                  </div>
-                )}
-                {wikipediaUrl && (
-                  <div>
-                    <a href={wikipediaUrl} target="_blank">
-                      Wikipedia
-                    </a>
-                  </div>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        setWaterfall({name: props.name, wikiurls: [wikipediaUrl], imageURL: thumbnailURL});
       },
       caves: async (props: { [name: string]: any}, lngLat: LngLat) => {
         const wikipediaUrl =
@@ -275,32 +204,15 @@ const useLayers = (
           }`;
           setLoaderText("");
         }
-        console.log(url);
-        new Popup()
-          .setLngLat(lngLat)
-          .setHTML(
-            renderToString(
-              <div>
-                <h1>{props.name || "Unnamed forest / farm road"}</h1>
-                {url && (
-                  <iframe
-                    width="300"
-                    src={url}
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                  ></iframe>
-                )}
-              </div>
-            )
-          )
-          .addTo(map);
+        setTrackModalData({url, name: props.name})
       },
     };
     const mouseEnter = () => {
-      map.getCanvas().style.cursor = "pointer";
+      console.log(tool)
+      if (tool === 'no-tools') map.getCanvas().style.cursor = "pointer";
     };
     const mouseLeave = (e: MapLayerMouseEvent) => {
+      if (tool !== 'no-tools') return;
       const features = map
         .queryRenderedFeatures(e.point)
         .map((f) => f?.layer?.id);
@@ -308,6 +220,7 @@ const useLayers = (
       if (!overlaps.length)
         map.getCanvas().style.cursor = window.currentCursor || "initial";
     };
+    console.log(tool)
     const theClickFunction = (e: MapMouseEvent) => {
       if (tool !== "no-tools") return;
       const features = map.queryRenderedFeatures(e.point);
@@ -327,9 +240,12 @@ const useLayers = (
 
     return () => {
       customLayers.forEach((layer: string) => {
+        map.off('mouseenter', layer, mouseEnter);
+        map.off('mouseleave', layer, mouseLeave);
         mapEventListenerAdder.off({type: "mouseenter", layerName: layer, listener: mouseEnter });
         mapEventListenerAdder.off({type: "mouseleave", layerName: layer, listener: mouseLeave });
       });
+      map.off('click', theClickFunction);
       mapEventListenerAdder.off({type: "click", listener: theClickFunction});
     };
   }, [tool]);

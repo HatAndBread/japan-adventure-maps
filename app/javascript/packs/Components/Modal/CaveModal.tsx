@@ -4,7 +4,7 @@ import Image from '../Image';
 
 const CaveModal = ({ cave }: { cave: Cave }) => {
   return (
-    <div className='mountain-modal'>
+    <div className='cave-modal'>
       <h1>{cave.name}</h1>
       {cave.imageURL && <Image src={cave.imageURL} altSrc='' alt='thumbnail'></Image>}
       {cave.wikiurls &&

@@ -94,6 +94,45 @@ export type Cave =
     }
   | undefined;
 
+export type Waterfall =
+  | {
+      imageURL: string | undefined;
+      wikiurls: string[] | undefined;
+      name: string | undefined;
+    }
+  | undefined;
+
+export type Bed =
+  | {
+      url: string | undefined;
+      name: string | undefined;
+      type: string | undefined;
+    }
+  | undefined;
+
+
+export type Hut =
+  | {
+      url: string | undefined;
+      name: string | undefined;
+      nameEn: string | undefined;
+    }
+  | undefined;
+
+export type Camp =
+  | {
+      url: string | undefined;
+      name: string | undefined;
+    }
+  | undefined;
+
+export type TrackModalData =
+  | {
+      url: string | undefined;
+      name: string | undefined;
+    }
+  | undefined;
+
 export type PathModalData =
   | {
       name: string | undefined;

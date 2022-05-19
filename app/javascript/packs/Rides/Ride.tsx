@@ -32,7 +32,7 @@ import useLayers from '../Hooks/useLayers';
 import { UseMapListenerInitialization } from '../Hooks/useMapListenerInitialization';
 import { UseFixMissingElevations } from '../Hooks/useFixMissingElevations';
 import ElevationDistanceDisplayer from '../Components/Map/ElevationDistanceDisplayer';
-import { RideContextProps, Weather, Mountain, Cave, PathModalData } from '../Types/Models';
+import { RideContextProps, Weather, Mountain, Cave, Bed, Camp, Hut, TrackModalData, Waterfall, PathModalData } from '../Types/Models';
 import { openFile } from '../../lib/FileOpener';
 import { importer } from '../../lib/importer';
 import FlickrModal from '../Components/Modal/FlickrModal';
@@ -41,7 +41,12 @@ import WeatherModal from '../Components/Modal/WeatherModal';
 import MountainModal from '../Components/Modal/MountainModal';
 import CaveModal from '../Components/Modal/CaveModal';
 import PathModal from '../Components/Modal/PathModal';
+import BedModal from '../Components/Modal/BedModal';
+import CampModal from '../Components/Modal/CampModal';
+import HutModal from '../Components/Modal/HutModal';
+import WaterfallModal from '../Components/Modal/WaterfallModal';
 import PopupModal from '../Components/Modal/PopupModal';
+import TrackModal from '../Components/Modal/TrackModal';
 
 export const RideContext = createContext<Partial<RideContextProps>>({});
 export const useRideContext = () => useContext(RideContext);
@@ -81,6 +86,11 @@ const Ride = () => {
   const [weather, setWeather] = useState<Weather>([]);
   const [mountain, setMountain] = useState<Mountain>();
   const [cave, setCave] = useState<Cave>();
+  const [waterfall, setWaterfall] = useState<Waterfall>();
+  const [bed, setBed] = useState<Bed>();
+  const [camp, setCamp] = useState<Camp>();
+  const [hut, setHut] = useState<Hut>();
+  const [trackModalData, setTrackModalData] = useState<TrackModalData>();
   const [pathModalData, setPathModalData] = useState<PathModalData>();
   const [popupModalData, setPopupModalData] = useState<string>();
   const [startLocationEn, setStartLocationEn] = useState();
@@ -143,7 +153,7 @@ const Ride = () => {
 
   useRouteUpdate(route, setDistance, setElevationChange, routeHistory);
   useMapSize({ height: 'calc(86vh - 64px)' });
-  useLayers(tool, setMountain, setCave, setLoaderText, setPathModalData);
+  useLayers(tool, setMountain, setCave, setBed, setHut, setCamp, setWaterfall, setLoaderText, setPathModalData, setTrackModalData);
 
   useEffect(() => {
     if (ctx.controllerData.controllerAction !== 'rides#show') return;
@@ -282,9 +292,44 @@ const Ride = () => {
         ) : (
           <></>
         )}
+        {waterfall ? (
+          <Modal onClose={() => setWaterfall(undefined)}>
+            <WaterfallModal waterfall={waterfall} />
+          </Modal>
+        ) : (
+          <></>
+        )}
+        {bed ? (
+          <Modal onClose={() => setBed(undefined)}>
+            <BedModal bed={bed} />
+          </Modal>
+        ) : (
+          <></>
+        )}
+        {hut ? (
+          <Modal onClose={() => setHut(undefined)}>
+            <HutModal hut={hut} />
+          </Modal>
+        ) : (
+          <></>
+        )}
+        {camp ? (
+          <Modal onClose={() => setCamp(undefined)}>
+            <CampModal camp={camp} />
+          </Modal>
+        ) : (
+          <></>
+        )}
         {pathModalData ? (
           <Modal onClose={() => setPathModalData(undefined)}>
             <PathModal path={pathModalData} />
+          </Modal>
+        ) : (
+          <></>
+        )}
+        {trackModalData ? (
+          <Modal onClose={() => setTrackModalData(undefined)}>
+            <TrackModal track={trackModalData} />
           </Modal>
         ) : (
           <></>
