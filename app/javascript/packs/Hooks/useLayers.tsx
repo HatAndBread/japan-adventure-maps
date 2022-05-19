@@ -208,7 +208,6 @@ const useLayers = (
       },
     };
     const mouseEnter = () => {
-      console.log(tool)
       if (tool === 'no-tools') map.getCanvas().style.cursor = "pointer";
     };
     const mouseLeave = (e: MapLayerMouseEvent) => {

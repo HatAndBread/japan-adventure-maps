@@ -336,24 +336,42 @@
   }
 }
 .logo {
-  background-image: url("splash.jpg");
   height: fit-content;
-  min-height: 200px;
   background-repeat: no-repeat;
   background-position-y: top;
   background-position-x: center;
   background-size: cover;
   padding: 16px;
   border-radius: 16px;
-  margin-top: 40px;
-  margin-bottom: 32px;
-  font-size: 72px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   max-width: 80%;
+}
+.logo .logo-title {
+  font-family: "Rock 3D";
+  font-size: 58px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo img {
+  height: 340px;
+  padding: 0;
+  margin: 0;
+}
+.logo .subtitle {
+  font-size: 24px;
 }
 
 @media only screen and (max-width: 700px) {
-  .logo {
-    font-size: 10vw;
+  .logo .logo-title {
+    font-size: 8vw;
+  }
+  .logo img {
+    height: 22vw;
+  }
+  .logo .subtitle {
+    font-size: 14px;
   }
 }
 .MapPopUpEditor {
