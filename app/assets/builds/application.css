@@ -774,7 +774,7 @@
 .hero {
   width: 100vw;
   min-height: 100vh;
-  margin-top: 40px;
+  margin-top: 24px;
   position: absolute;
   top: 0;
   left: 0;
@@ -783,7 +783,7 @@
   align-items: center;
 }
 .hero .route-title {
-  font-size: 22px;
+  font-size: 16px;
 }
 .hero .small-screen-title {
   display: none;
