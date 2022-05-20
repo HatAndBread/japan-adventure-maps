@@ -22,7 +22,7 @@ const PopupModal = ({
   const [delta, setDelta] = useState<Delta>();
   const {popups, setPopups} = useRideContext();
   const belongsToUser =
-    ctx.controllerData.currentUser.id === ctx.controllerData.ride.userId;
+    ctx.controllerData.currentUser?.id === ctx.controllerData.ride.userId;
   useEffect(() => {
     try {
       const d = new Delta(JSON.parse(popupData));
