@@ -203,7 +203,7 @@
   justify-content: center;
 }
 .MapForm form textarea {
-  font-family: inherit;
+  font-family: "Courier New", monospace;
   width: 100%;
   height: 100px;
   padding: 8px;
@@ -336,6 +336,9 @@
   }
 }
 .logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: fit-content;
   background-repeat: no-repeat;
   background-position-y: top;
@@ -362,6 +365,8 @@
 .logo .subtitle {
   font-size: 24px;
   font-weight: 300;
+  font-family: monospace;
+  max-width: 400px;
 }
 
 @media only screen and (max-width: 800px) {
@@ -372,7 +377,7 @@
     height: 30vw;
   }
   .logo .subtitle {
-    font-size: 14px;
+    font-size: 20px;
   }
 }
 .MapPopUpEditor {
@@ -777,6 +782,9 @@
   flex-direction: column;
   align-items: center;
 }
+.hero .route-title {
+  font-size: 22px;
+}
 .hero .small-screen-title {
   display: none;
 }
@@ -795,7 +803,7 @@
   width: 84%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 .how-it-works .basic-card {
   width: 270px;
@@ -833,10 +841,11 @@
 .featured-route .route-stats {
   display: flex;
   justify-content: space-evenly;
+  flex-wrap: wrap;
   margin: 0;
   margin-top: 8px;
   padding: 0;
-  font-size: x-small;
+  font-size: small;
   list-style: none;
   width: 100%;
 }
@@ -1203,7 +1212,7 @@ footer p {
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: monospace;
   text-align: center;
   font-weight: 100;
   margin: 0;
@@ -1211,6 +1220,15 @@ body {
   overflow-x: hidden;
   background-color: rgb(244, 244, 244);
   box-sizing: border-box;
+}
+
+.cool-font {
+  font-family: "Rock 3D";
+  font-weight: 100;
+}
+
+.forty-two {
+  font-size: 50px;
 }
 
 .flex-row-centered {
@@ -1241,7 +1259,7 @@ body {
 button {
   cursor: pointer;
   border-radius: 6px;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Courier New", monospace !important;
   font-weight: 300;
   background-color: white;
   border-color: rgb(200, 200, 200);
@@ -1338,13 +1356,15 @@ input[type=time],
 input[type=url],
 input[type=week],
 select:focus,
+select,
 textarea {
   font-size: 16px !important;
+  font-family: "Courier New", monospace !important;
   resize: none;
 }
 
 .ql-editor {
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "Courier New", monospace !important;
 }
 
 .facebook-login-btn {

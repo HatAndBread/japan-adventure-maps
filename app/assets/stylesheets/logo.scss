@@ -1,4 +1,7 @@
 .logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: fit-content;
   background-repeat: no-repeat;
   background-position-y: top;
@@ -24,6 +27,8 @@
   .subtitle {
     font-size: 24px;
     font-weight: 300;
+    font-family: monospace;
+    max-width: 400px;
   }
 }
 
@@ -36,7 +41,7 @@
       height: 30vw;
     }
     .subtitle {
-      font-size: 14px;
+      font-size: 20px;
     }
   }
 }

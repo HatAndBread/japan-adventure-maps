@@ -16,7 +16,7 @@
 @import './slideshow.scss';
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: monospace;
   text-align: center;
   font-weight: 100;
   margin: 0;
@@ -24,6 +24,15 @@ body {
   overflow-x: hidden;
   background-color: rgb(244, 244, 244);
   box-sizing: border-box;
+}
+
+.cool-font {
+  font-family: 'Rock 3D';
+  font-weight: 100;
+}
+
+.forty-two {
+  font-size: 50px;
 }
 
 .flex-row-centered {
@@ -52,7 +61,7 @@ body {
 button {
   cursor: pointer;
   border-radius: 6px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Courier New', monospace !important;
   font-weight: 300;
   background-color: white;
   border-color: rgb(200, 200, 200);
@@ -149,13 +158,15 @@ input[type='time'],
 input[type='url'],
 input[type='week'],
 select:focus,
+select,
 textarea {
   font-size: 16px !important;
+  font-family: 'Courier New', monospace !important;
   resize: none;
 }
 
 .ql-editor {
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: 'Courier New', monospace !important;
 }
 .facebook-login-btn {
   box-sizing: border-box;

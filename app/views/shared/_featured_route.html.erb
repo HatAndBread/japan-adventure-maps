@@ -6,7 +6,7 @@
   <div class="featured-route-content">
     <div class="small-screen-title">
       <%= link_to ride_path(route) do %>
-        <div>
+        <div class="route-title">
           <% if route.ride_type == 'cycling' %>
             <i class="fas fa-bicycle fa-lg"></i>
           <% else %>
@@ -35,7 +35,7 @@
     <div class="featured-route-text-content">
       <div class="big-screen-title">
         <%= link_to ride_path(route) do %>
-          <div>
+          <div class="route-title">
             <% if route.ride_type == 'cycling' %>
               <i class="fas fa-bicycle fa-lg"></i>
             <% else %>
@@ -51,31 +51,31 @@
             <% end %>
           </div>
           <% end %>
-        <div style="margin-bottom: 0; margin-top: 8px;">A <%= route.ride_type %> route in <%= route.start_location_en || 'a secret location' %></div>
+          <div style="margin-bottom: 0; margin-top: 8px;">A <%= route.ride_type %> route in <strong> <%= route.start_location_en || 'a secret location' %> </strong> </div>
       </div>
       <ul class="route-stats">
         <li>
-          <span class="weight-four">
+          <strong>
             Created by:
-          </span>
+          </strong>
           <%= link_to route.user.username , profile_path(route.user.profile) %>
         </li>&nbsp;&nbsp;&nbsp;&nbsp;
         <li>
-          <span class="weight-four">
+          <strong>
             Distance:
-          </span>
+          </strong>
           <%= route.distance&.to_i %> km
         </li>&nbsp;&nbsp;&nbsp;&nbsp;
         <li>
-          <span class="weight-four">
+          <strong>
             Elevation Gain:
-          </span>
+          </strong>
           <%= route.elevation_gain&.to_i %> m
         </li>&nbsp;&nbsp;&nbsp;&nbsp;
         <li>
-          <span class="weight-four">
+          <strong>
             Max Elevation:
-          </span>
+          </strong>
           <%= route.max_elevation&.to_i %> m
         </li>&nbsp;
       </ul>
