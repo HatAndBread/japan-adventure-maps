@@ -1,5 +1,5 @@
 class RidesController < ApplicationController
-  skip_before_action :authenticate_user!, only: %i[show new find_a_ride three_d]
+  skip_before_action :authenticate_user!, only: %i[show new find_a_ride three_d all_rides]
   before_action :fetch_ride, only: %i[show update edit destroy three_d]
   before_action :authorize!, only: %i[update edit destroy]
 
