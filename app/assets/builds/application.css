@@ -856,17 +856,38 @@
 }
 .featured-route .featured-route-content p {
   margin: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .featured-route .featured-route-content .featured-route-text-content {
   flex-grow: 1;
 }
 .featured-route .three-d-link {
-  position: absolute;
-  right: 48px;
-  top: 14px;
+  display: block;
+  border-radius: 6px;
+  border-style: solid;
+  border-color: gray;
+  line-height: 18px;
+  height: 18px;
+  text-decoration: none;
+  text-align: start;
+  width: 120px;
+  padding: 8px;
+  position: relative;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 300;
+  transition: 0.4s;
 }
 .featured-route .three-d-link img {
+  position: absolute;
+  top: 4px;
+  right: 8px;
   height: 24px;
+}
+.featured-route .three-d-link:hover {
+  background-color: rgb(245, 245, 255);
 }
 
 @media only screen and (max-width: 600px) {
@@ -893,11 +914,14 @@
   }
 
   .how-it-works {
-    justify-content: center;
+    width: 100vw;
+  }
+  .how-it-works .basic-card {
+    width: 78%;
   }
 }
 .spacer {
-  height: 260px;
+  height: 200px;
 }
 
 footer {
@@ -922,6 +946,9 @@ footer p {
   .hero .how-it-works {
     flex-direction: column;
     align-items: center;
+  }
+  .hero .how-it-works .basic-card {
+    margin-bottom: 32px;
   }
 }
 .ProfileShow .profile-top {

@@ -3,7 +3,6 @@
     <i class="fas fa-heart"></i>
     <span class="likes-count"> <%= route.likes_count %> </span>
   </div>
-  <a class="three-d-link" href="/rides/<%= route.id %>/three_d" title="View in 3D"><%= image_tag "3d.png", alt: "3D" %></a>
   <div class="featured-route-content">
     <div class="small-screen-title">
       <%= link_to ride_path(route) do %>
@@ -23,7 +22,7 @@
           <% end %>
         </div>
       <% end %>
-      <div style="margin-bottom: 0;">A <%= route.ride_type %> route in <%= route.start_location_en || 'a secret location' %></div>
+      <div style="margin-bottom: 0; margin-top: 8px;">A <%= route.ride_type %> route in <%= route.start_location_en || 'a secret location' %></div>
     </div>
     <div class="slideshow" data-urls="<%= route.featured_images %>">
       <div class="slideshow-image">
@@ -52,7 +51,7 @@
             <% end %>
           </div>
           <% end %>
-        <div style="margin-bottom: 0;">A <%= route.ride_type %> route in <%= route.start_location_en || 'a secret location' %></div>
+        <div style="margin-bottom: 0; margin-top: 8px;">A <%= route.ride_type %> route in <%= route.start_location_en || 'a secret location' %></div>
       </div>
       <ul class="route-stats">
         <li>
@@ -82,6 +81,7 @@
       </ul>
       <p>
         <%= route.description %>
+        <a class="three-d-link" href="/rides/<%= route.id %>/three_d" title="View in 3D">View in 3D&nbsp;<%= image_tag "3d.png", alt: "3D" %></a>
       </p>
     </div>
   </div>
