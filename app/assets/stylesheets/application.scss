@@ -41,6 +41,14 @@ body {
   object-fit: cover;
 }
 
+.weight-three {
+  font-weight: 300;
+}
+
+.weight-four {
+  font-weight: 400;
+}
+
 button {
   cursor: pointer;
   border-radius: 6px;
@@ -111,8 +119,6 @@ select {
   border-radius: 6px;
   background-color: white;
   padding: 16px;
-  margin: 16px auto 16px auto;
-  width: fit-content;
 }
 
 input[type='text'],
