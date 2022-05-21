@@ -786,6 +786,7 @@
   font-size: 16px;
 }
 .hero .small-screen-title {
+  margin-top: 24px;
   display: none;
 }
 .hero li {
@@ -930,7 +931,7 @@
   }
 }
 .spacer {
-  height: 200px;
+  height: 100px;
 }
 
 footer {
@@ -1326,6 +1327,13 @@ select {
   border-radius: 6px;
   background-color: white;
   padding: 16px;
+}
+
+.devise-form {
+  width: fit-content;
+  max-width: 90%;
+  margin: auto;
+  margin-top: 40px;
 }
 
 input[type=text],

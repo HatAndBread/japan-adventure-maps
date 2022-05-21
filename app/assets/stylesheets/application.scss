@@ -130,6 +130,13 @@ select {
   padding: 16px;
 }
 
+.devise-form {
+  width: fit-content;
+  max-width: 90%;
+  margin: auto;
+  margin-top: 40px;
+}
+
 input[type='text'],
 input[type='email'],
 input[type='password'],
