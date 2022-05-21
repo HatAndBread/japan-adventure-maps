@@ -380,6 +380,11 @@
     font-size: 20px;
   }
 }
+@media only screen and (max-width: 500px) {
+  .logo .subtitle {
+    font-size: 14px;
+  }
+}
 .MapPopUpEditor {
   display: flex;
   flex-direction: column;
