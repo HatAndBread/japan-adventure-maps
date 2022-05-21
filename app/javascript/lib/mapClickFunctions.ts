@@ -154,7 +154,6 @@ const getWeather = async (
     setWeather(weather);
   }
   setLoaderText('');
-  console.log(res);
 };
 
 export const getClickFunc = (

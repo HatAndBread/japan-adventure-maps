@@ -141,7 +141,6 @@ const FindRide = () => {
       });
     }
     return () => {
-      console.log('HOOP')
       ['rides', 'hikes'].forEach((type) => {
         mapEventListenerAdder.off({type: "mouseenter", layerName: `all-${type}-layer`, listener: mouseEnter.current});
         mapEventListenerAdder.off({type: "mouseleave", layerName: `all-${type}-layer`, listener: mouseLeave.current});

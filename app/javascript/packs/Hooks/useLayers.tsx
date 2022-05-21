@@ -122,7 +122,6 @@ const useLayers = (
         setHut({url: props.website, name: props.name, nameEn: props["name:en"]})
       },
       camps: (props: { [name: string]: any}, lngLat: LngLat) => {
-        console.log(props)
         setCamp({url: props.website, name: props.name})
       },
       beds: (props: { [name: string]: any}, lngLat: LngLat) => {
@@ -197,7 +196,6 @@ const useLayers = (
           setLoaderText("Gathering road data...");
           const res = await fetch(url);
           const data = await res.json();
-          console.log(data);
           url = `https://youtube.com/embed/${
             data.items[Math.floor(Math.random() * data.items.length)]?.id
               ?.videoId
@@ -219,7 +217,6 @@ const useLayers = (
       if (!overlaps.length)
         map.getCanvas().style.cursor = window.currentCursor || "initial";
     };
-    console.log(tool)
     const theClickFunction = (e: MapMouseEvent) => {
       if (tool !== "no-tools") return;
       const features = map.queryRenderedFeatures(e.point);

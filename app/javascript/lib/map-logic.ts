@@ -359,9 +359,6 @@ export class MapEventListenerAdder {
 
   removeAll() {
     const map = getMap();
-    console.log('REmoving all')
-    console.log(this.eventListenerFunctions)
-    console.log(this.eventListenerFunctionsWithLayer)
     this.eventListenerFunctions.forEach((listener) =>
       map.off(listener.type, listener.listener)
     );
