@@ -13,14 +13,8 @@ import { Map } from 'mapbox-gl';
 const App = ({ controllerData }: { controllerData: any }) => {
   if (controllerData.env === 'development') console.log(controllerData);
   const [allRides, setAllRides] = useState<RideType[]>([]);
-  const [mapReady, setMapReady] = useState(!!window.mapFinishedLoading);
   useEffect(()=> {
     const map = window.mapboxMap as Map;
-    if (!window.mapFinishedLoading) {
-      map.once('styledata', () => {
-        setMapReady(true);
-      })
-    }
     const getAllRides = async () => {
       const allRidesData = await axios.get('/all_rides');
       const rides = allRidesData.data.data.map((d)=> d.attributes) as RideType[];
@@ -52,7 +46,7 @@ const App = ({ controllerData }: { controllerData: any }) => {
     }
   };
   return (
-    <AppContext.Provider value={{ controllerData, allRides, mapReady }}>
+    <AppContext.Provider value={{ controllerData, allRides }}>
       <div className='App'>{getComponents()}</div>
     </AppContext.Provider>
   );

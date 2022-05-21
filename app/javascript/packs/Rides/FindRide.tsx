@@ -16,23 +16,26 @@ const FindRide = () => {
   const map = window.mapboxMap as Map;
   const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
 
-  const { allRides, mapReady } = useAppContext();
+  const { allRides } = useAppContext();
   const [rides, setRides] = useState<Ride[]>([]);
   const [hikes, setHikes] = useState<Ride[]>([]);
   const [rideModalContent, setRideModalContent] = useState<null | Ride>(null);
   const [showCycling, setShowCycling] = useState(true);
   const [showHiking, setShowHiking] = useState(true);
+
+
   const mouseEnter = useRef(() => {
     map.getCanvas().style.cursor = "pointer";
   });
   const mouseLeave = useRef(() => {
-    map.getCanvas().style.cursor = window.currentCursor || "initial";
+    map.getCanvas().style.cursor = window.currentCursor || "default";
   });
   const onRideClick = useRef((e: MapLayerMouseEvent) => {
     const props = e.features[0].properties;
     setRideModalContent(props as Ride)
     slideshow();
   });
+
   const iconsLoaded = useRef(0);
   useMapSize({ height: "calc(100vh - 40px)" });
   useEffect(() => {
@@ -47,6 +50,10 @@ const FindRide = () => {
       return [];
     }
   };
+  useEffect(()=>{
+    window.currentCursor = 'default'
+    map.getCanvas().style.cursor = window.currentCursor;
+  })
 
   useEffect(()=>{
     if (!map.getLayer('all-hikes-layer')) return;
@@ -67,7 +74,6 @@ const FindRide = () => {
   }, [showCycling])
 
   useEffect(() => {
-    if (!mapReady) return;
     if (!rides.length) return;
     if (!hikes.length) return;
     if (map.getSource("all-rides") || map.getLayer("all-rides-layer")) return;
@@ -134,7 +140,15 @@ const FindRide = () => {
         }
       });
     }
-  }, [rides, hikes, mapReady]);
+    return () => {
+      console.log('HOOP')
+      ['rides', 'hikes'].forEach((type) => {
+        mapEventListenerAdder.off({type: "mouseenter", layerName: `all-${type}-layer`, listener: mouseEnter.current});
+        mapEventListenerAdder.off({type: "mouseleave", layerName: `all-${type}-layer`, listener: mouseLeave.current});
+        mapEventListenerAdder.off({type: "click", layerName: `all-${type}-layer`, listener: onRideClick.current});
+      });
+    }
+  }, [rides, hikes]);
 
   useEffect(() => {
     // Clean up after navigation

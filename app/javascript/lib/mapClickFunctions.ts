@@ -64,11 +64,6 @@ const goToGoogleMaps = (e: MapLayerMouseEvent) => {
     if (!win || win.closed || typeof win.closed === 'undefined') {
       alert('Please enable pop ups for this site to use Google Street View.');
     }
-    // const check = setInterval(() => {
-    //   if (win.closed) {
-    //     clearInterval(check);
-    //   }
-    // }, 1);
   } else {
     window.open(url, '_blank');
   }

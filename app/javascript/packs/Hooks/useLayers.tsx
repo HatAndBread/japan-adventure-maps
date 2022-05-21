@@ -239,12 +239,12 @@ const useLayers = (
 
     return () => {
       customLayers.forEach((layer: string) => {
-        map.off('mouseenter', layer, mouseEnter);
-        map.off('mouseleave', layer, mouseLeave);
+        // map.off('mouseenter', layer, mouseEnter);
+        // map.off('mouseleave', layer, mouseLeave);
         mapEventListenerAdder.off({type: "mouseenter", layerName: layer, listener: mouseEnter });
         mapEventListenerAdder.off({type: "mouseleave", layerName: layer, listener: mouseLeave });
       });
-      map.off('click', theClickFunction);
+      // map.off('click', theClickFunction);
       mapEventListenerAdder.off({type: "click", listener: theClickFunction});
     };
   }, [tool]);

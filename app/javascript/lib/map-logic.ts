@@ -359,6 +359,9 @@ export class MapEventListenerAdder {
 
   removeAll() {
     const map = getMap();
+    console.log('REmoving all')
+    console.log(this.eventListenerFunctions)
+    console.log(this.eventListenerFunctionsWithLayer)
     this.eventListenerFunctions.forEach((listener) =>
       map.off(listener.type, listener.listener)
     );
@@ -385,9 +388,16 @@ export class MapEventListenerAdder {
 
   off(listenerObj: Listener) {
     const map = getMap();
-    map.off(listenerObj.type, listenerObj.listener);
-    this.eventListenerFunctions = this.eventListenerFunctions.filter(
-      (listener) => listener.listener !== listenerObj.listener
-    );
+    if (listenerObj.layerName){
+      map.off(listenerObj.type, listenerObj.layerName ,listenerObj.listener);
+      this.eventListenerFunctionsWithLayer = this.eventListenerFunctionsWithLayer.filter(
+        (listener) => listener.listener !== listenerObj.listener
+      );
+    } else {
+      map.off(listenerObj.type, listenerObj.listener);
+      this.eventListenerFunctions = this.eventListenerFunctions.filter(
+        (listener) => listener.listener !== listenerObj.listener
+      );
+    }
   }
 }

@@ -127,14 +127,12 @@ const startReact = () => {
   ReactDOM.render(<App controllerData={instanceVars} />, root);
 };
 
-window.mapboxMap.once('styledata', () => {
-  window.mapFinishedLoading = true;
-});
 document.addEventListener('turbo:before-render', () => {
   // Clean up React before each page load!
   window.stop3D = true;
   const root = document.getElementById('root');
   if (root) {
+    ReactDOM.unmountComponentAtNode(root);
     root.remove();
     Turbo.clearCache();
   }

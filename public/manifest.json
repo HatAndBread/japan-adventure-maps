@@ -1,11 +1,11 @@
 {
-  "name": "Pedal Party",
-  "short_name": "Pedal Party",
+  "name": "Japan Adventure Maps",
+  "short_name": "JAM",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#333333",
   "theme_color": "#333333",
-  "description": "An application for making and sharing bicycle routes",
+  "description": "An application for making and sharing hiking and cycling routes in Japan",
   "orientation": "portrait-primary",
   "icons": [
     {
