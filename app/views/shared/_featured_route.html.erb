@@ -77,7 +77,9 @@
       </ul>
       <p>
         <%= route.description %>
-        <a class="three-d-link" href="/rides/<%= route.id %>/three_d" title="View in 3D">View in 3D&nbsp;<%= image_tag "3d.png", alt: "3D" %></a>
+        <% if 1 + 1 == 3 %>
+          <a class="three-d-link" href="/rides/<%= route.id %>/three_d" title="View in 3D">View in 3D&nbsp;<%= image_tag "3d.png", alt: "3D" %></a>
+        <% end %>
       </p>
     </div>
   </div>

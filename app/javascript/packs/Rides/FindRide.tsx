@@ -235,13 +235,15 @@ const FindRide = () => {
               >
                 View Route
               </a>
-              <a
-                className="link-button"
-                href={`/rides/${rideModalContent.id}/three_d`}
-                style={{ width: "100%", maxWidth: "224px", margin: "8px" }}
-              >
-                3D Tour
-              </a>
+              { 1 + 1 === 3 && // Disabling for now
+                <a
+                  className="link-button"
+                  href={`/rides/${rideModalContent.id}/three_d`}
+                  style={{ width: "100%", maxWidth: "224px", margin: "8px" }}
+                >
+                  3D Tour
+                </a>
+              }
             </div>
             <div
               style={{

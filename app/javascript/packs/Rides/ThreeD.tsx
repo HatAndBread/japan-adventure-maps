@@ -1,17 +1,15 @@
-import { LngLat, Map, MercatorCoordinate } from 'mapbox-gl';
-import React, { useEffect, useState, useMemo } from 'react';
-import MapboxMap from '../Components/Map/MapboxMap';
-import { useMapSize } from '../Hooks/useMapSize';
-import { useAppContext } from '../Context';
-import { drawRoute, routeDistance, Route } from '../../lib/map-logic';
-import along from '@turf/along';
-import { lineString } from '@turf/helpers';
-import length from '@turf/length';
-import bearing from '@turf/bearing';
-import rhumbDestination from '@turf/rhumb-destination';
-import { point } from '@turf/helpers';
-import { addLayersAndSources } from '../../application-esbuild.js';
-import { getElevation } from '../../lib/map-logic';
+import { LngLat, Map, MercatorCoordinate } from "mapbox-gl";
+import React, { useEffect, useState, useMemo, useRef } from "react";
+import MapboxMap from "../Components/Map/MapboxMap";
+import { useMapSize } from "../Hooks/useMapSize";
+import { useAppContext } from "../Context";
+import { Route } from "../../lib/map-logic";
+import along from "@turf/along";
+import { lineString } from "@turf/helpers";
+import length from "@turf/length";
+import bearing from "@turf/bearing";
+import rhumbDestination from "@turf/rhumb-destination";
+import { point } from "@turf/helpers";
 
 const ThreeD = () => {
   const data = useAppContext().controllerData;
@@ -21,26 +19,36 @@ const ThreeD = () => {
   }, []);
 
   const route = useMemo<Route>(() => {
-    return originalRoute.map((r, i) => (!(i % (originalRoute.length >= 180 ? 60 : 20)) ? r : null)).filter((r) => r);
+    return originalRoute
+      .map((r, i) =>
+        !(i % (originalRoute.length >= 180 ? 60 : 20)) ? r : null
+      )
+      .filter((r) => r);
   }, []);
+  const started = useRef(false);
 
   const map = window.mapboxMap as Map;
-  useMapSize({ height: '100vh' });
+  useMapSize({ height: "calc(100vh - 40px)" });
   useEffect(() => {
-    map.setStyle('mapbox://styles/mapbox/satellite-v9');
+    map.setStyle("mapbox://styles/mapbox/satellite-v9");
     window.stop3D = undefined;
-    map.once('style.load', () => {
-      addLayersAndSources();
+    setTimeout(()=>{
       setMapIdle(true);
-    });
+    }, 2000)
   }, []);
+
   useEffect(() => {
+    if (!route) return;
+    if (started.current) return;
+    started.current = true;
+    const elevations = route.map((r) => Math.round(r.e));
+    const highestElevation = elevations.reduce((prev, curr) =>
+      prev > curr ? prev : curr
+    );
     const animate = () => {
-      const routeDistance = length(lineString(targetRoute));
-      const animationDuration = routeDistance * 6000;
       const cameraRouteDistance = length(lineString(cameraRoute));
+      const cameraAltitude = highestElevation + 6000;
       let start;
-      let previousElevation = elevations[0];
       function frame(time) {
         if (!start) start = time;
         // phase determines how far through the animation we are
@@ -57,13 +65,13 @@ const ThreeD = () => {
         // use the phase to get a point that is the appropriate distance along the route
         // this approach syncs the camera and route positions ensuring they move
         // at roughly equal rates even if they don't contain the same number of points
-        const alongRoute = along(lineString(targetRoute), routeDistance * phase).geometry.coordinates;
+        const alongRoute = along(lineString(targetRoute), routeDistance * phase)
+          .geometry.coordinates;
 
-        const alongCamera = along(lineString(cameraRoute), cameraRouteDistance * phase).geometry.coordinates;
-
-        const elevation = getElevation(new LngLat(alongRoute[0], alongRoute[1]));
-        if (elevation || elevation === 0) previousElevation = elevation;
-        const cameraAltitude = (elevation || previousElevation || 0) + (2000 - (lowestElevation || 0));
+        const alongCamera = along(
+          lineString(cameraRoute),
+          cameraRouteDistance * phase
+        ).geometry.coordinates;
 
         const camera = map.getFreeCameraOptions();
 
@@ -95,35 +103,37 @@ const ThreeD = () => {
     };
 
     const beginAnimate = () => {
-      map.addSource('trace', {
-        type: 'geojson',
+      map.addSource("trace", {
+        type: "geojson",
         data: {
-          type: 'Feature',
+          type: "Feature",
           properties: {},
           geometry: {
-            type: 'LineString',
+            type: "LineString",
             coordinates: originalRoute.map((r) => [r.lng, r.lat]),
           },
         },
       });
       map.addLayer({
-        type: 'line',
-        source: 'trace',
-        id: 'trace',
+        type: "line",
+        source: "trace",
+        id: "trace",
         paint: {
-          'line-color': 'rgba(250,50,50,0.7)',
-          'line-width': 5,
+          "line-color": "rgba(250,50,50,0.7)",
+          "line-width": 5,
         },
         layout: {
-          'line-cap': 'round',
-          'line-join': 'round',
+          "line-cap": "round",
+          "line-join": "round",
         },
       });
-      animate();
+      map.once('idle', animate)
     };
     if (!route?.length) return;
-    if (!mapIdle) return;
+
     const targetRoute = route.map((r) => [r.lng, r.lat]);
+    const routeDistance = length(lineString(targetRoute));
+    const animationDuration = routeDistance * 6000;
     const getCameraRoute = () => {
       try {
         return route.map((r, i) => {
@@ -131,36 +141,35 @@ const ThreeD = () => {
           const currPoint = point([r.lng, r.lat]);
           const nextPoint = point([next.lng, next.lat]);
           const b = bearing(nextPoint, currPoint);
-          return rhumbDestination(currPoint, 3, b).geometry.coordinates;
+          return rhumbDestination(currPoint, 15, b).geometry.coordinates;
         });
       } catch {
         return route.map((r) => [r.lng - 0.03, r.lat]);
       }
     };
     const cameraRoute = getCameraRoute();
-    const elevations = route.map((r) => r.e);
-    const lowestElevation = elevations.reduce((prev, curr) => (prev < curr ? prev : curr));
-    map.flyTo({ center: new LngLat(route[0].lng, route[0].lat), zoom: 15 });
-    map.once('idle', beginAnimate);
+    map.jumpTo({ center: new LngLat(route[0].lng, route[0].lat), zoom: 15 });
+    map.once('idle', beginAnimate)
   }, [route, mapIdle]);
   return (
-    <div className='ThreeD'>
+    <div className="ThreeD">
       <a
         href={`/rides/${data.ride.id}`}
         style={{
-          position: 'absolute',
-          backgroundColor: 'white',
-          borderRadius: '6px',
-          left: '8px',
-          width: '30px',
-          height: '30px',
+          position: "absolute",
+          backgroundColor: "white",
+          borderRadius: "6px",
+          left: "8px",
+          width: "30px",
+          height: "30px",
           zIndex: 100,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <div>
-          <i className='fas fa-arrow-alt-circle-left big-icon'></i>
+          <i className="fas fa-arrow-alt-circle-left big-icon"></i>
         </div>
       </a>
       <MapboxMap />

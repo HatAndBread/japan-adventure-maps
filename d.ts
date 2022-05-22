@@ -22,10 +22,12 @@ declare module 'window' {
   global {
     interface Window {
       mapboxMap?: any;
+      tdMap?: any;
       controlPointMarkers?: any;
       popupMarkers?: any;
       mapEventListenerAdder?: any;
       mapboxContainer: HTMLDivElement;
+      tdContainer: HTMLDivElement;
       userLocation: any;
       markers: any[];
       FB: any;

@@ -16,7 +16,7 @@
 @import './slideshow.scss';
 
 body {
-  font-family: monospace;
+  font-family: 'Roboto Mono', Courier, monospace;
   text-align: center;
   font-weight: 100;
   margin: 0;
@@ -61,7 +61,7 @@ body {
 button {
   cursor: pointer;
   border-radius: 6px;
-  font-family: 'Courier New', monospace !important;
+  font-family: 'Roboto Mono', Courier, monospace !important;
   font-weight: 300;
   background-color: white;
   border-color: rgb(200, 200, 200);
@@ -168,12 +168,12 @@ select:focus,
 select,
 textarea {
   font-size: 16px !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: 'Roboto Mono', Courier, monospace;
   resize: none;
 }
 
 .ql-editor {
-  font-family: 'Courier New', monospace !important;
+  font-family: 'Roboto Mono', Courier, monospace;
 }
 .facebook-login-btn {
   box-sizing: border-box;

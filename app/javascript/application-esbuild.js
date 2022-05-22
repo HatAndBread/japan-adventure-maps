@@ -104,6 +104,7 @@ export const addLayersAndSources = () => {
 };
 
 window.mapboxMap.on('load', addLayersAndSources);
+
 const startReact = () => {
   navbar();
   // Let's clear any popups or markers on each page load;;

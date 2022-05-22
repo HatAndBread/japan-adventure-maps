@@ -286,6 +286,7 @@ const MapTools = ({
                 </div>
               </button>
             )}
+              { 1 + 1 === 3 && // Disabling for now
             <button
               onClick={() => {
                 window.location.replace(
@@ -299,6 +300,7 @@ const MapTools = ({
                 <i className="fas fa-cube big-icon"></i> 3D Tour
               </div>
             </button>
+            }
           </>
         )}
 
