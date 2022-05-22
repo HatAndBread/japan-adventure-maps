@@ -427,7 +427,7 @@ const Ride = () => {
             />
             <div className="map-top-tools">
               {window.isProbablyDesktop && <Controls3D map={map} />}
-              <div>
+              <div style={{marginTop: '16px'}}>
                 <select
                   title="Select Map Style"
                   style={{ pointerEvents: "all" }}

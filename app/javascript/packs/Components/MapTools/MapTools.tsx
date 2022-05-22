@@ -485,11 +485,17 @@ const MapTools = ({
         width='40'
         title='Map Tools'
         className='tool-box-icon pointer'
+        style={{marginTop: '24px'}}
         onClick={() => setShowTools(true)}
         alt='ToolBox'></img>
       {isEditor && (
-        <div className='no-tools-undo'>
-          <div>
+        <div className='no-tools-undo'
+
+        style={{marginTop: '20px'}}
+      >
+          <div
+
+        >
             {tool === 'cp' && (
               <div className={'nt-container'}>
                 <i className='fas fa-dot-circle big-icon'></i>
