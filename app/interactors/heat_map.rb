@@ -12,7 +12,7 @@ class HeatMap
       puts 'Writing to file...'
       File.write('heatmap.geojson', stringified_json)
       puts "Uploading heatmap to transfer.sh"
-      puts `cat #{Rails.root}/heatmap.geojson | curl -X PUT -T "-" https://transfer.sh/heatmap#{Time.now.to_i}.geojson.gpg`.green
+      puts `cat #{Rails.root}/heatmap.geojson | curl -X PUT -T "-" https://transfer.sh/heatmap#{Time.now.to_i}.geojson.gpg`
       puts "Download the new heatmap geojson at this url ⬆"
     end
   end
