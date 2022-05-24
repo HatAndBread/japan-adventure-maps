@@ -100,6 +100,27 @@ export const addLayersAndSources = () => {
     },
   });
 
+  window.mapboxMap.addSource('heatmap', {
+    type: 'vector',
+    url: 'mapbox://pedalparty.bylknak6'
+  });
+
+  window.mapboxMap.addLayer({
+    id: 'heatmap-layer',
+    type: 'line',
+    source: 'heatmap',
+    visible: false,
+    'source-layer': 'heatmap1653279422-a4wida',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
+    paint: {
+      'line-color': 'rgba(230,100, 140, 0.2)',
+      'line-width': 2,
+    },
+  });
+  window.mapboxMap.setLayoutProperty('heatmap-layer', 'visibility', 'none');
   window.mapboxMap.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
 };
 

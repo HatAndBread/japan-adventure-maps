@@ -2,17 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MapMouseEvent } from 'mapbox-gl';
 import { MapEventListenerAdder } from '../../../lib/map-logic';
 import { useResetPitchAndBearing } from '../../Hooks/useResetPitchAndBearing';
+import {useAppContext} from '../../Context';
 
 const MapboxMap = ({ onClick, tool }: { onClick?: (e: MapMouseEvent) => any; tool?: string }) => {
   const lastFunc = useRef<((arg0: any)=>any)>();
   const mapEventListenerAdder = window.mapEventListenerAdder as MapEventListenerAdder;
   const [mapInitialized, setMapInitialized] = useState(false);
   const ref = useRef<HTMLDivElement>();
+  const map = window.mapboxMap;
+  const {controllerData} = useAppContext();
   useResetPitchAndBearing();
+  useEffect(()=>{
+    if (!mapInitialized) return;
+    const shouldNotShowHeatmap = () => map.getLayer('heatmap-layer') && !['rides#show', 'rides#edit', 'rides#new'].includes(controllerData.controllerAction);
+    if (shouldNotShowHeatmap()) map.setLayoutProperty("heatmap-layer", "visibility", "none");
+  }, [mapInitialized])
   useEffect(() => {
     if (ref.current) {
       const container = window.mapboxContainer;
-      const map = window.mapboxMap;
       if (!mapInitialized) {
         if (lastFunc.current) mapEventListenerAdder.off({ type: 'click', listener: lastFunc.current });
         lastFunc.current = onClick;

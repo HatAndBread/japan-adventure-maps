@@ -1,16 +1,17 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { useRideContext } from '../../Rides/Ride';
-import { Map } from 'mapbox-gl';
-import { useAppContext } from '../../Context';
-import { Route, drawRoute, routeDistance, maxElevation, elevationChangeCalculation } from '../../../lib/map-logic';
-import {flash} from '../../../lib/flash';
-import axios from '../../../lib/axios';
-import { last } from 'lodash';
-import toolbox from '../../../../assets/images/toolbox.svg';
-import Exporter from '../../../lib/Exporter';
-import Modal from '../Modal/Modal';
-import LikeButton from '../LikeButton';
-import LikesCount from '../LikesCount';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import Switch from "react-switch";
+import { useRideContext } from "../../Rides/Ride";
+import { Map } from "mapbox-gl";
+import { useAppContext } from "../../Context";
+import { Route, drawRoute } from "../../../lib/map-logic";
+import { flash } from "../../../lib/flash";
+import axios from "../../../lib/axios";
+import { last } from "lodash";
+import toolbox from "../../../../assets/images/toolbox.svg";
+import Exporter from "../../../lib/Exporter";
+import Modal from "../Modal/Modal";
+import LikeButton from "../LikeButton";
+import LikesCount from "../LikesCount";
 
 const MapTools = ({
   setPreviousTool,
@@ -22,13 +23,19 @@ const MapTools = ({
   routeHistory: Route[];
 }) => {
   const ctx = useAppContext();
-  const likesUserIds = useMemo(()=> ctx.controllerData?.likes?.map((like)=> like.userId), [])
+  const likesUserIds = useMemo(
+    () => ctx.controllerData?.likes?.map((like) => like.userId),
+    []
+  );
   const userId = ctx.controllerData?.currentUser?.id;
-  const likeableId = ctx.controllerData?.ride?.id
+  const likeableId = ctx.controllerData?.ride?.id;
   const creatorId = ctx.controllerData?.ride?.userId;
   const [showTools, setShowTools] = useState(window.isProbablyDesktop);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [fileFormat, setFileFormat] = useState('.gpx');
+  const [fileFormat, setFileFormat] = useState(".gpx");
+  const [showHeatmap, setShowHeatmap] = useState(
+    !!localStorage.getItem("showHeatmap")
+  );
   const ref = useRef<HTMLDivElement>();
   const {
     directionsType,
@@ -45,18 +52,42 @@ const MapTools = ({
     setPopups,
     isEditor,
   } = useRideContext();
-  const [showLike, setShowLike] = useState(userId && !isEditor && creatorId !== userId && !likesUserIds.includes(userId));
-  const [likesCount, setLikesCount] = useState(likesUserIds?.length || 0)
+  const [showLike, setShowLike] = useState(
+    userId &&
+      !isEditor &&
+      creatorId !== userId &&
+      !likesUserIds.includes(userId)
+  );
+  const [likesCount, setLikesCount] = useState(likesUserIds?.length || 0);
   const getStyle = (myTool: string) =>
-    myTool === tool ? { borderColor: '#0bda51', boxShadow: '0 0 2px 2px #0bda51' } : {};
+    myTool === tool
+      ? { borderColor: "#0bda51", boxShadow: "0 0 2px 2px #0bda51" }
+      : {};
   const handleClick = (type: string) => {
     window.isProbablyNotDesktop && setShowTools(false);
     setPreviousTool(tool);
     setTool(type);
   };
-  
+  const map = window.mapboxMap as Map;
+
+  useEffect(() => {
+    const toggle = () => {
+      map.setLayoutProperty(
+        "heatmap-layer",
+        "visibility",
+        showHeatmap ? "visible" : "none"
+      );
+    showHeatmap
+      ? localStorage.setItem("showHeatmap", "true")
+      : localStorage.removeItem("showHeatmap");
+    };
+    map.getLayer("heatmap-layer") ? toggle() : map.once("load", toggle);
+  }, [showHeatmap]);
+
   const clearMap = () => {
-    const confirmed = window.confirm('Are you sure you want to clear this map?');
+    const confirmed = window.confirm(
+      "Are you sure you want to clear this map?"
+    );
     if (confirmed) {
       setRoute([]);
       setDistance(0);
@@ -86,12 +117,13 @@ const MapTools = ({
   };
 
   const save = () => {
-    if (!route.length) return alert('Please create a route before saving.');
-    if (!ctx.controllerData.currentUser) return alert('Please sign in to save your route.');
+    if (!route.length) return alert("Please create a route before saving.");
+    if (!ctx.controllerData.currentUser)
+      return alert("Please sign in to save your route.");
     setShowForm(true);
   };
   const hideMapTools = () => {
-    ref.current.style.opacity = '0';
+    ref.current.style.opacity = "0";
     setTimeout(() => {
       setShowTools(false);
     }, 300);
@@ -103,33 +135,36 @@ const MapTools = ({
 
   const copyRide = async () => {
     const res = await axios.post(`/rides/${ctx.controllerData.ride.id}/copy`);
-    if (res?.data?.success && res.data.id){
-      window.location.href = `/rides/${res.data.id}`
+    if (res?.data?.success && res.data.id) {
+      window.location.href = `/rides/${res.data.id}`;
     } else {
-      flash('There was an error copying this ride. \n Please try again later.', "error");
+      flash(
+        "There was an error copying this ride. \n Please try again later.",
+        "error"
+      );
     }
   };
 
   const getToolName = () => {
     switch (tool) {
-      case 'point':
-        return 'Add To Route';
-      case 'line':
-        return 'Add Lines';
-      case 'cp':
-        return 'Control Points';
-      case 'google':
-        return 'Google Street View';
-      case 'pop-up':
-        return 'Add Point Of Interest';
-      case 'flickr':
-        return 'Image Search';
-      case 'info':
-        return 'Info';
-      case 'no-tools':
-        return 'No tools';
-      case 'weather':
-        return 'Weather';
+      case "point":
+        return "Add To Route";
+      case "line":
+        return "Add Lines";
+      case "cp":
+        return "Control Points";
+      case "google":
+        return "Google Street View";
+      case "pop-up":
+        return "Add Point Of Interest";
+      case "flickr":
+        return "Image Search";
+      case "info":
+        return "Info";
+      case "no-tools":
+        return "No tools";
+      case "weather":
+        return "Weather";
       default:
         return tool;
     }
@@ -137,7 +172,7 @@ const MapTools = ({
 
   useEffect(() => {
     if (showTools && ref.current) {
-      ref.current.style.opacity = '1';
+      ref.current.style.opacity = "1";
     }
   }, [showTools, ref]);
 
@@ -180,9 +215,7 @@ const MapTools = ({
         <div className="closer" onClick={hideMapTools}>
           <i className="fas fa-times pointer"></i>
         </div>
-        {!isEditor && (
-          <LikesCount likesCount={likesCount}/>
-        )}
+        {!isEditor && <LikesCount likesCount={likesCount} />}
         <div style={{ color: "rgba(180,120,120, 0.9)" }}>Dirt Road: ----</div>
         <div style={{ color: "rgba(180,40,250, 0.6)" }}>Bike Path: ----</div>
         <div style={{ color: "rgba(23, 136, 0, 1)" }}>Foot Path: ----</div>
@@ -280,27 +313,31 @@ const MapTools = ({
         {!isEditor && (
           <>
             {creatorId !== userId && userId && (
-              <button className="map-tool-button" title="Copy this ride" onClick={copyRide}>
+              <button
+                className="map-tool-button"
+                title="Copy this ride"
+                onClick={copyRide}
+              >
                 <div>
                   <i className="fas fa-copy big-icon"></i> Copy
                 </div>
               </button>
             )}
-              { 1 + 1 === 3 && // Disabling for now
-            <button
-              onClick={() => {
-                window.location.replace(
-                  `/rides/${ctx.controllerData.ride.id}/three_d`
-                );
-              }}
-              title="3D Tour"
-              className="map-tool-button big-icon"
-            >
-              <div>
-                <i className="fas fa-cube big-icon"></i> 3D Tour
-              </div>
-            </button>
-            }
+            {1 + 1 === 3 && ( // Disabling for now
+              <button
+                onClick={() => {
+                  window.location.replace(
+                    `/rides/${ctx.controllerData.ride.id}/three_d`
+                  );
+                }}
+                title="3D Tour"
+                className="map-tool-button big-icon"
+              >
+                <div>
+                  <i className="fas fa-cube big-icon"></i> 3D Tour
+                </div>
+              </button>
+            )}
           </>
         )}
 
@@ -475,6 +512,25 @@ const MapTools = ({
             </select>
           </div>
         )}
+        <div
+          className="heatmap-toggle"
+          title={showHeatmap ? "Hide heatmap" : "Show heatmap"}
+          style={{
+            display: "flex",
+            marginTop: "8px",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>{showHeatmap ? "Hide heatmap" : "Show heatmap"}</div>
+          <Switch
+            onChange={() => {
+              setShowHeatmap(!showHeatmap);
+            }}
+            checked={showHeatmap}
+            className="react-switch"
+          />
+        </div>
       </div>
     );
 
@@ -482,66 +538,70 @@ const MapTools = ({
     <>
       <img
         src={toolbox}
-        width='40'
-        title='Map Tools'
-        className='tool-box-icon pointer'
-        style={{marginTop: '24px'}}
+        width="40"
+        title="Map Tools"
+        className="tool-box-icon pointer"
+        style={{ marginTop: "24px" }}
         onClick={() => setShowTools(true)}
-        alt='ToolBox'></img>
+        alt="ToolBox"
+      ></img>
       {isEditor && (
-        <div className='no-tools-undo'
-
-        style={{marginTop: '20px'}}
-      >
-          <div
-
-        >
-            {tool === 'cp' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-dot-circle big-icon'></i>
+        <div className="no-tools-undo" style={{ marginTop: "20px" }}>
+          <div>
+            {tool === "cp" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-dot-circle big-icon"></i>
               </div>
             )}
-            {tool === 'line' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-draw-polygon big-icon'></i>
+            {tool === "line" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-draw-polygon big-icon"></i>
               </div>
             )}
-            {tool === 'point' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-route big-icon'></i>
+            {tool === "point" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-route big-icon"></i>
               </div>
             )}
-            {tool === 'pop-up' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-map-pin big-icon'></i>
+            {tool === "pop-up" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-map-pin big-icon"></i>
               </div>
             )}
-            {tool === 'google' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-street-view big-icon'></i>
+            {tool === "google" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-street-view big-icon"></i>
               </div>
             )}
-            {tool === 'flickr' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-camera big-icon'></i>
+            {tool === "flickr" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-camera big-icon"></i>
               </div>
             )}
-            {tool === 'info' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-info big-icon'></i>
+            {tool === "info" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-info big-icon"></i>
               </div>
             )}
-            {tool === 'weather' && (
-              <div className={'nt-container'}>
-                <i className='fas fa-cloud-sun big-icon'></i>
+            {tool === "weather" && (
+              <div className={"nt-container"}>
+                <i className="fas fa-cloud-sun big-icon"></i>
               </div>
             )}
           </div>
-          <button className='map-tool-button three-buttons big-icon' title='undo' onClick={undo}>
-            <i className='fas fa-undo'></i>
+          <button
+            className="map-tool-button three-buttons big-icon"
+            title="undo"
+            onClick={undo}
+          >
+            <i className="fas fa-undo"></i>
           </button>
-          <button className='map-tool-button three-buttons big-icon' title='redo' onClick={redo}>
-            <i className='fas fa-redo'></i>
+          <button
+            className="map-tool-button three-buttons big-icon"
+            title="redo"
+            onClick={redo}
+          >
+            <i className="fas fa-redo"></i>
           </button>
         </div>
       )}
