@@ -100,17 +100,36 @@ export const addLayersAndSources = () => {
     },
   });
 
-  window.mapboxMap.addSource('heatmap', {
+  window.mapboxMap.addSource('heatmap-hiking', {
     type: 'vector',
     url: 'mapbox://pedalparty.bylknak6'
   });
 
+  window.mapboxMap.addSource('heatmap-cycling', {
+    type: 'vector',
+    url: 'mapbox://pedalparty.0w2pf3gm'
+  });
+
   window.mapboxMap.addLayer({
-    id: 'heatmap-layer',
+    id: 'heatmap-hiking-layer',
     type: 'line',
-    source: 'heatmap',
-    visible: false,
+    source: 'heatmap-hiking',
     'source-layer': 'heatmap1653279422-a4wida',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
+    paint: {
+      'line-color': 'rgba(10,200, 60, 0.2)',
+      'line-width': 2,
+    },
+  });
+
+  window.mapboxMap.addLayer({
+    id: 'heatmap-cycling-layer',
+    type: 'line',
+    source: 'heatmap-cycling',
+    'source-layer': 'heatmap-cycling-1653351640-br5f6h',
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
@@ -120,7 +139,8 @@ export const addLayersAndSources = () => {
       'line-width': 2,
     },
   });
-  window.mapboxMap.setLayoutProperty('heatmap-layer', 'visibility', 'none');
+  window.mapboxMap.setLayoutProperty('heatmap-hiking-layer', 'visibility', 'none');
+  window.mapboxMap.setLayoutProperty('heatmap-cycling-layer', 'visibility', 'none');
   window.mapboxMap.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
 };
 

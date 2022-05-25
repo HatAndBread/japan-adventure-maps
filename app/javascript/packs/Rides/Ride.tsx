@@ -95,7 +95,6 @@ const Ride = () => {
   const [popupModalData, setPopupModalData] = useState<string>();
   const [startLocationEn, setStartLocationEn] = useState();
   const [startLocationJp, setStartLocationJp] = useState();
-  const [showHeatmap, setShowHeatmap] = useState(!!localStorage.getItem('showHeatmap'));
 
   const [isMobile, setIsMobile] = useState(window.innerWidth > 1000 ? false : true);
   const [elevationDistanceDisplay, setElevationDistanceDisplay] = useState<null | {

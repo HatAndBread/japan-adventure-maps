@@ -33,8 +33,11 @@ const MapTools = ({
   const [showTools, setShowTools] = useState(window.isProbablyDesktop);
   const [showExportModal, setShowExportModal] = useState(false);
   const [fileFormat, setFileFormat] = useState(".gpx");
-  const [showHeatmap, setShowHeatmap] = useState(
-    !!localStorage.getItem("showHeatmap")
+  const [showHikingHeatmap, setShowHikingHeatmap] = useState(
+    !!localStorage.getItem("showHikingHeatmap")
+  );
+  const [showCyclingHeatmap, setShowCyclingHeatmap] = useState(
+    !!localStorage.getItem("showCyclingHeatmap")
   );
   const ref = useRef<HTMLDivElement>();
   const {
@@ -73,16 +76,30 @@ const MapTools = ({
   useEffect(() => {
     const toggle = () => {
       map.setLayoutProperty(
-        "heatmap-layer",
+        "heatmap-hiking-layer",
         "visibility",
-        showHeatmap ? "visible" : "none"
+        showHikingHeatmap ? "visible" : "none"
       );
-    showHeatmap
-      ? localStorage.setItem("showHeatmap", "true")
-      : localStorage.removeItem("showHeatmap");
+    showHikingHeatmap
+      ? localStorage.setItem("showHikingHeatmap", "true")
+      : localStorage.removeItem("showHikingHeatmap");
     };
-    map.getLayer("heatmap-layer") ? toggle() : map.once("load", toggle);
-  }, [showHeatmap]);
+    map.getLayer("heatmap-hiking-layer") ? toggle() : map.once("load", toggle);
+  }, [showHikingHeatmap]);
+
+  useEffect(() => {
+    const toggle = () => {
+      map.setLayoutProperty(
+        "heatmap-cycling-layer",
+        "visibility",
+        showCyclingHeatmap ? "visible" : "none"
+      );
+    showCyclingHeatmap
+      ? localStorage.setItem("showCyclingHeatmap", "true")
+      : localStorage.removeItem("showCyclingHeatmap");
+    };
+    map.getLayer("heatmap-cycling-layer") ? toggle() : map.once("load", toggle);
+  }, [showCyclingHeatmap]);
 
   const clearMap = () => {
     const confirmed = window.confirm(
@@ -514,7 +531,7 @@ const MapTools = ({
         )}
         <div
           className="heatmap-toggle"
-          title={showHeatmap ? "Hide heatmap" : "Show heatmap"}
+          title="Hiking heatmap"
           style={{
             display: "flex",
             marginTop: "8px",
@@ -522,12 +539,31 @@ const MapTools = ({
             justifyContent: "space-between",
           }}
         >
-          <div>{showHeatmap ? "Hide heatmap" : "Show heatmap"}</div>
+          <div> <i className="fas fa-hiking fa-lg"></i> heatmap </div>
           <Switch
             onChange={() => {
-              setShowHeatmap(!showHeatmap);
+              setShowHikingHeatmap(!showHikingHeatmap);
             }}
-            checked={showHeatmap}
+            checked={showHikingHeatmap}
+            className="react-switch"
+          />
+        </div>
+        <div
+          className="heatmap-toggle"
+          title="Cycling heatmap"
+          style={{
+            display: "flex",
+            marginTop: "8px",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div> <i className="fas fa-bicycle fa-lg"></i> heatmap</div>
+          <Switch
+            onChange={() => {
+              setShowCyclingHeatmap(!showCyclingHeatmap);
+            }}
+            checked={showCyclingHeatmap}
             className="react-switch"
           />
         </div>

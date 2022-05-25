@@ -14,8 +14,8 @@ const MapboxMap = ({ onClick, tool }: { onClick?: (e: MapMouseEvent) => any; too
   useResetPitchAndBearing();
   useEffect(()=>{
     if (!mapInitialized) return;
-    const shouldNotShowHeatmap = () => map.getLayer('heatmap-layer') && !['rides#show', 'rides#edit', 'rides#new'].includes(controllerData.controllerAction);
-    if (shouldNotShowHeatmap()) map.setLayoutProperty("heatmap-layer", "visibility", "none");
+    const shouldNotShowHeatmap = () => map.getLayer('heatmap-hiking-layer') && !['rides#show', 'rides#edit', 'rides#new'].includes(controllerData.controllerAction);
+    if (shouldNotShowHeatmap()) map.setLayoutProperty("heatmap-hiking-layer", "visibility", "none");
   }, [mapInitialized])
   useEffect(() => {
     if (ref.current) {
