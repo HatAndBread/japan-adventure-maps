@@ -233,9 +233,11 @@ const MapTools = ({
           <i className="fas fa-times pointer"></i>
         </div>
         {!isEditor && <LikesCount likesCount={likesCount} />}
-        <div style={{ color: "rgba(180,120,120, 0.9)" }}>Dirt Road: ----</div>
-        <div style={{ color: "rgba(180,40,250, 0.6)" }}>Bike Path: ----</div>
-        <div style={{ color: "rgba(23, 136, 0, 1)" }}>Foot Path: ----</div>
+        <div style={{fontWeight: 400}}>
+          <div style={{ color: "rgba(180,120,120, 0.9)" }}>Dirt Road: ----</div>
+          <div style={{ color: "rgba(180,40,250, 0.6)" }}>Bike Path: ----</div>
+          <div style={{ color: "rgba(23, 136, 0, 1)" }}>Foot Path: ----</div>
+        </div>
         {showLike && (
           <button
             className="map-tool-button"
@@ -359,7 +361,7 @@ const MapTools = ({
         )}
 
         <div className="tool-name-display">
-          <div style={{ textDecoration: "underline" }}>Current Tool</div>
+          <div style={{ textDecoration: "underline", fontWeight: 400 }}>Current Tool</div>
           <div>{getToolName()}</div>
         </div>
         {isEditor && (
