@@ -76,7 +76,7 @@ const Ride = () => {
   const [showRideWithModal, setShowRideWithModal] = useState(false);
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
-  const [loaderText, setLoaderText] = useState<null | string>(null);
+  const [loaderText, setLoaderText] = useState<null | string>('Loading...');
   const [startTime, setStartTime] = useState<null | string>(null);
   const draggingPointIndex = useRef<null | number>(null);
   const draggingControlPoint = useRef(false);
@@ -361,22 +361,22 @@ const Ride = () => {
               >
                 <option value="gpx">Import GPX File</option>
                 <option value="kml">Import KML File</option>
-                {/* <option value='rwgps'>Import from Ride With GPS</option>  DOESNT WORK ANYMORE?? */}
               </select>
               {(importType === "gpx" || importType === "kml") && (
                 <button
                   onClick={() => {
                     openFile(
-                      (fileList) => {
-                        fileList[0].text().then((text) => {
-                          const route = importer(importType, text);
-                          if (!route)
-                            return alert(
-                              "There was an error importing your file."
-                            );
-                          setRouteFromScratch(route);
-                          setShowRideWithModal(false);
-                        });
+                      async (fileList) => {
+                        setLoaderText('Importing route. This may take a moment...')
+                        const text = await fileList[0].text()
+                        const route = importer(importType, text);
+                        if (!route)
+                          return alert(
+                            "There was an error importing your file."
+                          );
+                        setRouteFromScratch(route);
+                        setShowRideWithModal(false);
+                        setLoaderText(null);
                       },
                       false,
                       `.${importType}`

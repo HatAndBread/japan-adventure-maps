@@ -54,6 +54,7 @@ const MapTools = ({
     setTool,
     setPopups,
     isEditor,
+    setLoaderText
   } = useRideContext();
   const [showLike, setShowLike] = useState(
     userId &&
@@ -151,6 +152,7 @@ const MapTools = ({
   };
 
   const copyRide = async () => {
+    setLoaderText('Copying Ride...')
     const res = await axios.post(`/rides/${ctx.controllerData.ride.id}/copy`);
     if (res?.data?.success && res.data.id) {
       window.location.href = `/rides/${res.data.id}`;

@@ -6,7 +6,7 @@ import { addLayersAndSources } from '../../application-esbuild.js';
 
 export const UseMapInitialization = () => {
   const map = window.mapboxMap as Map;
-  const { route, setRoute, setPopups, setStartTime, setTitle, setDescription } = useRideContext();
+  const { route, setRoute, setPopups, setStartTime, setTitle, setDescription, setLoaderText } = useRideContext();
   const ctx = useAppContext();
   const isEditor = ['rides#new', 'rides#edit'].includes(ctx.controllerData.controllerAction);
   const { ride, controllerAction, profile } = ctx.controllerData;
@@ -20,8 +20,6 @@ export const UseMapInitialization = () => {
       if (ride.startTime) setStartTime(ride.startTime);
       if (controllerAction === 'rides#new') {
         const routeUnderConstruction = !!(localStorage.getItem('newRoute') || localStorage.getItem('editRoute'));
-        console.log(routeUnderConstruction);
-        console.log(profile);
         if (!routeUnderConstruction && profile?.startLng && profile?.startLat) {
           map.jumpTo({ center: new LngLat(profile.startLng, profile.startLat), zoom: 14 });
         } else if (!routeUnderConstruction && window.userLocation?.length) {
@@ -41,6 +39,7 @@ export const UseMapInitialization = () => {
     } else {
       map.once('styledata', setInitialState);
     }
+    setLoaderText(null);
   }, []);
   return <></>;
 };
