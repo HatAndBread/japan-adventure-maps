@@ -12,14 +12,22 @@ const ThreeDDemo = () => {
     map.jumpTo({ center: new LngLat(138.7262, 35.3606) });
     map.setZoom(12.5);
     map.setPitch(80);
-    map.setStyle("mapbox://styles/mapbox/satellite-v9");
-    if (map.isStyleLoaded()){
-      addLayersAndSources();
-    } else {
-      map.once("styledata", () => {
-        addLayersAndSources();
-      });
+    if (map.getSource('mapbox-dem')) {
+      map.setTerrain();
+      map.removeSource('mapbox-dem');
     }
+    map.setStyle("mapbox://styles/mapbox/satellite-v9");
+    map.once('idle', addLayersAndSources)
+    // addLayersAndSources();
+    // if (map.isStyleLoaded()){
+      // map.setStyle("mapbox://styles/mapbox/satellite-v9");
+      // addLayersAndSources();
+    // } else {
+      // map.once("styledata", () => {
+        // map.setStyle("mapbox://styles/mapbox/satellite-v9");
+        // addLayersAndSources();
+      // });
+    // }
   }, []);
   return (
     <>
