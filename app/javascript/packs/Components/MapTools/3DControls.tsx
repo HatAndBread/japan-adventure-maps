@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Map } from "mapbox-gl";
 import north from "../../../../assets/images/north.svg";
 import tdImage from "../../../../assets/images/3d.png";
+import { useAppContext } from "../../Context";
 
 let rotating = false;
 let rotatingPitch = false;
@@ -17,8 +18,10 @@ const rotatePitch = (map: Map, direction: 1 | -1) => {
 };
 
 const Controls3D = ({ map }: { map: Map }) => {
+  const { controllerAction } = useAppContext().controllerData;
   const [show, setShow] = useState(
-    window.localStorage.getItem("dismissed-3d") !== "true"
+    window.localStorage.getItem("dismissed-3d") !== "true" ||
+      controllerAction === "pages#three_d_demo"
   );
   useEffect(() => {
     return () => {
@@ -41,7 +44,7 @@ const Controls3D = ({ map }: { map: Map }) => {
         onClick={() => {
           setShow(true);
         }}
-        style={{ cursor: "pointer", backgroundColor: 'transparent' }}
+        style={{ cursor: "pointer", backgroundColor: "transparent" }}
       >
         <img src={tdImage} height={24}></img>
       </div>

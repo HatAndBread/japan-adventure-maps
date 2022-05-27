@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   get '/delete_account', to: 'pages#delete_account'
   get '/find_a_ride', to: 'rides#find_a_ride'
   get '/all_rides', to: 'rides#all_rides'
+  get '/three_d_demo', to: 'pages#three_d_demo'
   post '/participate', to: 'rides#participate'
 
   get '/api/user_location', to: 'api#user_location'

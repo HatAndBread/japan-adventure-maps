@@ -8,6 +8,10 @@ class PagesController < ApplicationController
     end.flatten.compact
   end
 
+  def three_d_demo
+    use_react
+  end
+
   def delete_account; end
 
   def privacy_policy; end

@@ -1,26 +1,29 @@
 // Entry point for the build script in your package.json
-import 'regenerator-runtime/runtime';
-import Rails from '@rails/ujs';
+import "regenerator-runtime/runtime";
+import Rails from "@rails/ujs";
 import "@hotwired/turbo-rails";
-import * as ActiveStorage from '@rails/activestorage';
-import mapboxgl from 'mapbox-gl';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './packs/App';
-import { getInstanceVars } from './lib/getInstanceVars';
-import '@fortawesome/fontawesome-free/js/fontawesome';
-import '@fortawesome/fontawesome-free/js/solid';
-import '@fortawesome/fontawesome-free';
-import { MapEventListenerAdder } from './lib/map-logic';
-import axios from './lib/axios';
-import { navbar } from './lib/navbar';
-import {slideshow} from './lib/slideshow'
+import * as ActiveStorage from "@rails/activestorage";
+import mapboxgl from "mapbox-gl";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./packs/App";
+import { getInstanceVars } from "./lib/getInstanceVars";
+import "@fortawesome/fontawesome-free/js/fontawesome";
+import "@fortawesome/fontawesome-free/js/solid";
+import "@fortawesome/fontawesome-free";
+import { MapEventListenerAdder } from "./lib/map-logic";
+import axios from "./lib/axios";
+import { navbar } from "./lib/navbar";
+import { slideshow } from "./lib/slideshow";
 
 Rails.start();
 ActiveStorage.start();
 
-const baseURL = window.location.host === 'localhost:3000' ? 'http://localhost:3000' : 'https://pedal-party.bike';
-if ('serviceWorker' in navigator && 'caches' in window) {
+const baseURL =
+  window.location.host === "localhost:3000"
+    ? "http://localhost:3000"
+    : "https://pedal-party.bike";
+if ("serviceWorker" in navigator && "caches" in window) {
   navigator.serviceWorker
     .register(
       // path to the service worker file
@@ -28,41 +31,47 @@ if ('serviceWorker' in navigator && 'caches' in window) {
     )
     // the registration is async and it returns a promise
     .then(function (reg) {
-      console.log('Registration Successful');
+      console.log("Registration Successful");
     });
 }
 
-window.isBadBrowser = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+window.isBadBrowser = /^((?!chrome|android).)*safari/i.test(
+  navigator.userAgent
+);
 window.isProbablyTablet = screen.width < 1000 && screen.width > 500;
 window.isProbablyMobile = screen.width <= 500;
 window.isProbablyNotDesktop = isProbablyMobile || isProbablyTablet;
 window.isProbablyDesktop = !window.isProbablyNotDesktop;
 window.disable3d = isBadBrowser && isProbablyNotDesktop;
 window.isTouchScreen = false;
-window.baseMapName = 'Pedal Party Japan';
+window.baseMapName = "Pedal Party Japan";
 window.baseMapURL = `mapbox://styles/pedalparty/cl0drj7vd002a14pjyr3gfwdd?key=${process.env.MAPTILER_KEY}`;
 
 const setTouchScreen = () => {
   window.isTouchScreen = true;
-  document.removeEventListener('touchstart', setTouchScreen);
+  document.removeEventListener("touchstart", setTouchScreen);
 };
-document.addEventListener('touchstart', setTouchScreen);
+document.addEventListener("touchstart", setTouchScreen);
 
 mapboxgl.accessToken = process.env.MAPBOX_KEY;
 
 window.markers = []; // Put ALL Mapbox Markers and Popups in here to be cleared on page change.
 window.mapEventListenerAdder ||= new MapEventListenerAdder();
-window.mapboxContainer ||= document.createElement('div');
-window.mapboxContainer.id = 'map';
+window.mapboxContainer ||= document.createElement("div");
+window.mapboxContainer.id = "map";
 window.mapboxMap ||= new mapboxgl.Map({
   container: mapboxContainer,
   style: window.baseMapURL,
   center: [138.2529, 38],
-  maxBounds: [[114.5052, 22.171032], [175.865751, 52.559459]],
+  maxBounds: [
+    [114.5052, 22.171032],
+    [175.865751, 52.559459],
+  ],
   zoom: 5,
 });
 
-window.isProbablyDesktop && window.mapboxMap.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+window.isProbablyDesktop &&
+  window.mapboxMap.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 window.mapboxMap.addControl(
   new mapboxgl.GeolocateControl({
     positionOptions: {
@@ -71,7 +80,7 @@ window.mapboxMap.addControl(
     trackUserLocation: false,
     showUserHeading: true,
   }),
-  'bottom-left'
+  "bottom-left"
 );
 
 if (window.isBadBrowser) {
@@ -84,67 +93,90 @@ if (window.isBadBrowser) {
 }
 
 export const addLayersAndSources = () => {
-  window.mapboxMap.addSource('mapbox-dem', {
-    type: 'raster-dem',
-    url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-    tileSize: 512,
-    maxzoom: 14,
-  });
-  window.mapboxMap.addLayer({
-    id: 'sky',
-    type: 'sky',
-    paint: {
-      'sky-type': 'atmosphere',
-      'sky-atmosphere-sun': [0.0, 0.0],
-      'sky-atmosphere-sun-intensity': 15,
-    },
-  });
+  if (!window.mapboxMap.getSource("mapbox-dem")) {
+    window.mapboxMap.addSource("mapbox-dem", {
+      type: "raster-dem",
+      url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+      tileSize: 512,
+      maxzoom: 14,
+    });
+  }
 
-  window.mapboxMap.addSource('heatmap-hiking', {
-    type: 'vector',
-    url: 'mapbox://pedalparty.bylknak6'
-  });
+  window.mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
 
-  window.mapboxMap.addSource('heatmap-cycling', {
-    type: 'vector',
-    url: 'mapbox://pedalparty.0w2pf3gm'
-  });
+  if (!window.mapboxMap.getLayer("sky")) {
+    window.mapboxMap.addLayer({
+      id: "sky",
+      type: "sky",
+      paint: {
+        "sky-type": "atmosphere",
+        "sky-atmosphere-sun": [0.0, 0.0],
+        "sky-atmosphere-sun-intensity": 15,
+      },
+    });
+  }
 
-  window.mapboxMap.addLayer({
-    id: 'heatmap-hiking-layer',
-    type: 'line',
-    source: 'heatmap-hiking',
-    'source-layer': 'heatmap1653279422-a4wida',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-    },
-    paint: {
-      'line-color': 'rgba(10,200, 60, 0.2)',
-      'line-width': 2,
-    },
-  });
+  if (!window.mapboxMap.getSource("heatmap-hiking")) {
+    window.mapboxMap.addSource("heatmap-hiking", {
+      type: "vector",
+      url: "mapbox://pedalparty.bylknak6",
+    });
+  }
 
-  window.mapboxMap.addLayer({
-    id: 'heatmap-cycling-layer',
-    type: 'line',
-    source: 'heatmap-cycling',
-    'source-layer': 'heatmap-cycling-1653351640-br5f6h',
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-    },
-    paint: {
-      'line-color': 'rgba(230,100, 140, 0.2)',
-      'line-width': 2,
-    },
-  });
-  window.mapboxMap.setLayoutProperty('heatmap-hiking-layer', 'visibility', 'none');
-  window.mapboxMap.setLayoutProperty('heatmap-cycling-layer', 'visibility', 'none');
-  window.mapboxMap.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
+  if (!window.mapboxMap.getSource("heatmap-cycling")) {
+    window.mapboxMap.addSource("heatmap-cycling", {
+      type: "vector",
+      url: "mapbox://pedalparty.0w2pf3gm",
+    });
+  }
+
+  if (!window.mapboxMap.getLayer("heatmap-hiking-layer")) {
+    window.mapboxMap.addLayer({
+      id: "heatmap-hiking-layer",
+      type: "line",
+      source: "heatmap-hiking",
+      "source-layer": "heatmap1653279422-a4wida",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "rgba(10,150, 20, 0.2)",
+        "line-width": 2,
+      },
+    });
+  }
+
+  if (!window.mapboxMap.getLayer("heatmap-cycling-layer")) {
+    window.mapboxMap.addLayer({
+      id: "heatmap-cycling-layer",
+      type: "line",
+      source: "heatmap-cycling",
+      "source-layer": "heatmap-cycling-1653351640-br5f6h",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "rgba(230,100, 140, 0.2)",
+        "line-width": 2,
+      },
+    });
+  }
+
+  window.mapboxMap.setLayoutProperty(
+    "heatmap-hiking-layer",
+    "visibility",
+    "none"
+  );
+  window.mapboxMap.setLayoutProperty(
+    "heatmap-cycling-layer",
+    "visibility",
+    "none"
+  );
 };
 
-window.mapboxMap.on('load', addLayersAndSources);
+window.mapboxMap.on("load", addLayersAndSources);
 
 const startReact = () => {
   navbar();
@@ -153,14 +185,18 @@ const startReact = () => {
   const removeItems = (items) => items?.forEach((item) => item?.remove());
   removeItems(window.markers);
   window.markers = [];
-  if (window.mapboxMap.getLayer('route')) window.mapboxMap.removeLayer('route');
-  if (window.mapboxMap.getLayer('preview')) window.mapboxMap.removeLayer('preview');
-  if (window.mapboxMap.getLayer('trace')) window.mapboxMap.removeLayer('trace');
-  if (window.mapboxMap.getSource('route')) window.mapboxMap.removeSource('route');
-  if (window.mapboxMap.getSource('preview')) window.mapboxMap.removeSource('preview');
-  if (window.mapboxMap.getSource('trace')) window.mapboxMap.removeSource('trace');
-  const root = document.createElement('div');
-  root.id = 'root';
+  if (window.mapboxMap.getLayer("route")) window.mapboxMap.removeLayer("route");
+  if (window.mapboxMap.getLayer("preview"))
+    window.mapboxMap.removeLayer("preview");
+  if (window.mapboxMap.getLayer("trace")) window.mapboxMap.removeLayer("trace");
+  if (window.mapboxMap.getSource("route"))
+    window.mapboxMap.removeSource("route");
+  if (window.mapboxMap.getSource("preview"))
+    window.mapboxMap.removeSource("preview");
+  if (window.mapboxMap.getSource("trace"))
+    window.mapboxMap.removeSource("trace");
+  const root = document.createElement("div");
+  root.id = "root";
   document.body.appendChild(root);
   const instanceVars = getInstanceVars();
   // If instanceVars is not defined useReact is not being used
@@ -169,34 +205,38 @@ const startReact = () => {
   ReactDOM.render(<App controllerData={instanceVars} />, root);
 };
 
-document.addEventListener('turbo:before-render', () => {
-  // Clean up React before each page load!
+const navigationCleanup = () => {
   window.stop3D = true;
-  const root = document.getElementById('root');
+  const root = document.getElementById("root");
   if (root) {
     ReactDOM.unmountComponentAtNode(root);
     root.remove();
     Turbo.clearCache();
   }
-});
+};
 
-document.addEventListener('turbo:load', () => {
+document.addEventListener("turbo:before-render", navigationCleanup);
+window.addEventListener('popstate', navigationCleanup);
+
+
+document.addEventListener("turbo:load", () => {
   startReact();
   slideshow();
   let height = 0;
-  Array.from(document.getElementsByClassName('rails-flash')).forEach((item) => {
+  Array.from(document.getElementsByClassName("rails-flash")).forEach((item) => {
     if (item.innerText.length) {
       height += 40;
       item.style.top = `${height}px`;
       setTimeout(() => {
-        item.style.top = '-200px';
+        item.style.top = "-200px";
       }, 3000);
     }
   });
 });
 
+
 const getUserLocation = async () => {
-  const res = await axios.get('/api/user_location');
+  const res = await axios.get("/api/user_location");
   window.userLocation = res?.data?.length ? res.data : [138.2529, 36.2048];
 };
 

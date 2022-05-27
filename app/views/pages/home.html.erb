@@ -7,14 +7,14 @@
       <p>Use our <%= link_to 'map editor', new_ride_path, class: 'link-underline' %> to plan adventures, analyze terrain, and export routes to your GPS device.</p>
     </div>
     <div class="basic-card">
-      <h2><%= link_to 'Find adventures', find_a_ride_path, class: 'link-underline' %></h2>
+      <h2><%= link_to 'Find Adventures', find_a_ride_path, class: 'link-underline' %></h2>
       <%= image_tag 'adventure.png', alt: 'Adventures' %>
       <p>Use maps that other users have made to start planning your own adventures.</p>
     </div>
     <div class="basic-card">
-      <h2><a href="#" class="link-underline">Rate Routes</a></h2>
-      <%= image_tag 'like.png', alt: 'like' %>
-      <p>Rate roads, trails, routes, camp sites, mountains and more. Contribute to Japan's only outdoor adventure database.</p>
+      <h2><%= link_to 'Explore In 3D', three_d_demo_path, class: 'link-underline' %></h2>
+      <%= image_tag 'tddemo.png', alt: '3D Screen Shot' %>
+      <p>Explore Japan's beautiful mountains in 3D. Click <%= link_to 'here', three_d_demo_path, class: 'link-underline' %> to start exploring.</p>
     </div>
   </div>
   <div class="featured-routes-container">

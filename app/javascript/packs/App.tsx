@@ -7,6 +7,7 @@ import FindRide from './Rides/FindRide';
 import ProfileEdit from './Profiles/ProfileEdit';
 import ProfileShow from './Profiles/ProfileShow';
 import ThreeD from './Rides/ThreeD';
+import ThreeDDemo from './Pages/ThreeDDemo';
 import axios from '../lib/axios';
 import { Map } from 'mapbox-gl';
 
@@ -27,6 +28,8 @@ const App = ({ controllerData }: { controllerData: any }) => {
     switch (controllerData.controllerAction) {
       case 'pages#home':
         return <Home />;
+      case 'pages#three_d_demo':
+        return <ThreeDDemo />;
       case 'rides#show':
         return <Ride />;
       case 'rides#new':
