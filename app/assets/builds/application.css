@@ -1308,6 +1308,7 @@ a {
   background-size: 100% 0.1em, 0 0.1em;
   background-position: 100% 100%, 0 100%;
   background-repeat: no-repeat;
+  font-weight: 400;
   transition: background-size 400ms;
 }
 
