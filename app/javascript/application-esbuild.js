@@ -86,10 +86,10 @@ window.mapboxMap.addControl(
 if (window.isBadBrowser) {
   // Try to prevent safari webgl memory leaks
   window.mapboxMap._maxTileCacheSize = 0;
-  if (isProbablyNotDesktop) {
-    window.mapboxMap.dragRotate.disable();
-    window.mapboxMap.touchZoomRotate.disableRotation();
-  }
+  // if (isProbablyNotDesktop) {
+    // window.mapboxMap.dragRotate.disable();
+    // window.mapboxMap.touchZoomRotate.disableRotation();
+  // }
 }
 
 export const addLayersAndSources = () => {
@@ -209,7 +209,7 @@ const navigationCleanup = () => {
   window.stop3D = true;
   const root = document.getElementById("root");
   if (root) {
-    // ReactDOM.unmountComponentAtNode(root);
+    ReactDOM.unmountComponentAtNode(root);
     root.remove();
     Turbo.clearCache();
   }
@@ -220,7 +220,6 @@ window.addEventListener('popstate', navigationCleanup);
 
 
 document.addEventListener("turbo:load", () => {
-  console.log('turbo-load')
   startReact();
   slideshow();
   let height = 0;

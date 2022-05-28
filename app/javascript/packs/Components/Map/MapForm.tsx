@@ -3,7 +3,6 @@ import Form from '../Form/Form';
 import Modal from '../../Components/Modal/Modal';
 import axios from '../../../lib/axios';
 import { useAppContext } from '../../Context';
-import MyLoader from '../MyLoader';
 import { useRideContext } from '../../Rides/Ride';
 import {
   getRouteBoundingBox,
@@ -23,8 +22,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   const controller = ctx.controllerData?.controllerAction;
   const [isNew, setIsNew] = useState(controller === 'rides#new');
   const [saveEditAsNew, setSaveEditAsNew] = useState(false);
-  const { route, description, setDescription, startTime, setStartTime, title, setTitle, popups, startLocationEn, startLocationJp } = rideCtx;
-  const [loading, setLoading] = useState(false);
+  const { route, description, setDescription, startTime, setLoaderText, title, setTitle, popups, startLocationEn, startLocationJp } = rideCtx;
   const [rideId, setRideId] = useState<number>(ctx.controllerData?.ride?.id);
   const [status, setStatus] = useState<'neutral' | 'error' | 'success'>('neutral');
   const [imageURL, setImageURL] = useState<string>();
@@ -74,7 +72,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
     };
     //@ts-ignore
     if (imageURL) bodyObject.map_image_url = imageURL;
-    setLoading(true);
+    setLoaderText('Saving your route...')
     let res;
     try {
       if (isNew) {
@@ -89,7 +87,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
         localStorage.removeItem('editPopups');
         localStorage.removeItem('editId');
         setRideId(res.data.ride_id);
-        setLoading(false);
+        setLoaderText(null);
         setStatus('success');
       } else {
         setStatus('error');
@@ -97,7 +95,7 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
     } catch {
       setStatus('error');
     }
-    setLoading(false);
+    setLoaderText(null);
   };
 
   const saveAsNew = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -114,7 +112,6 @@ const MapForm = ({ setShowForm }: { setShowForm: React.Dispatch<React.SetStateAc
   return (
     <Modal onClose={() => setShowForm(false)}>
       <div className="MapForm">
-        {loading && <MyLoader />}
         {status === "neutral" && (
           <Form action="/ride" method="POST" onSubmit={formSubmit}>
             <input
