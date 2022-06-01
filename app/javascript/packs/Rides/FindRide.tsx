@@ -170,6 +170,8 @@ const FindRide = () => {
 
     document.addEventListener("turbo:before-fetch-response", l);
     window.addEventListener("popstate", l);
+
+    return () => {l()}
   }, []);
 
   return (

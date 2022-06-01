@@ -176,7 +176,7 @@ export const addLayersAndSources = () => {
   );
 };
 
-window.mapboxMap.on("load", addLayersAndSources);
+window.mapboxMap.once("load", addLayersAndSources);
 
 const startReact = () => {
   navbar();

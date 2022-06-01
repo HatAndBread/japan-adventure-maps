@@ -3,6 +3,7 @@ import { MapMouseEvent, Map } from "mapbox-gl";
 import { MapEventListenerAdder } from "../../../lib/map-logic";
 import { useResetPitchAndBearing } from "../../Hooks/useResetPitchAndBearing";
 import { useAppContext } from "../../Context";
+import {addLayersAndSources} from '../../../application-esbuild.js';
 
 const MapboxMap = ({
   onClick,
@@ -36,7 +37,10 @@ const MapboxMap = ({
     if (shouldNotShowCyclingHeatmap())
       map.setLayoutProperty("heatmap-cycling-layer", "visibility", "none");
     if (["rides#find_a_ride"].includes(controllerData.controllerAction)) {
-      map.setStyle(window.baseMapURL);
+      if (map.getStyle().name !== "Pedal Party Japan") {
+        map.setStyle(window.baseMapURL);
+        map.once('idle', addLayersAndSources);
+      }
     }
   }, [mapInitialized]);
   useEffect(() => {
