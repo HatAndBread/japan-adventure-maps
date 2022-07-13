@@ -2,7 +2,10 @@
 
 Source code for the [Japan Adventure Maps](https://japan-adventure-maps.com) website.
 Japan Adventure Maps is application for building and sharing maps of hiking trails and cycling routes in Japan.
+
 <img width="250" alt="map2" src="https://user-images.githubusercontent.com/61222965/178621293-13de5d2d-4106-496c-8172-97ca84d35aa5.png">
+<img width="250" alt="map1" src="https://user-images.githubusercontent.com/61222965/178621515-ee1214c4-abb2-412a-b663-44de04fdee58.png">
+
 
 # Technologies 💻
 * Rails
