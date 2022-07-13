@@ -36,5 +36,5 @@ We use a .env file to store application secrets. Contact me directly for a copy 
 * Come up with a better build procedure. Currentlty building directly to the build folder and hosting that on Heroku. Hence the huge amount of js files.
 * Improve SEO
 * Removal of dead code
-* Improve test coverage
+* Improve test coverage (using rspec in the spec folder. The test folder can be removed)
 * WebGL memory leak with Webkit
