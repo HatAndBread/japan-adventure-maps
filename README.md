@@ -33,6 +33,7 @@ We use a .env file to store application secrets. Contact me directly for a copy 
 * Different kinds of activities (trail running, skiing, mountain biking etc)
 * Organize group rides, runs, hikes
 * Integration with Strava, RideWithGPS?
+* Come up with a better build procedure. Currentlty building directly to the build folder and hosting that on Heroku. Hence the huge amount of js files.
 * Improve SEO
 * Removal of dead code
 * Improve test coverage
